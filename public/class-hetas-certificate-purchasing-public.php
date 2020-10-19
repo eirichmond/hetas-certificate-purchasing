@@ -379,7 +379,8 @@ class Hetas_Certificate_Purchasing_Public {
 		}
 		$invoice = $this->create_ccp_invoice($contact, $response, $postdata); // create invoice
  		$invoice_items = $this->create_ccp_invoice_items($invoice, $contact, $response, $postdata); // create invoice items
-		
+		$payment = $this->create_ccp_payment($invoice, $contact, $response, $postdata);
+
 		$successful_data = array();
 		$successful_data['invoice'] = $invoice;
 		$successful_data['contact'] = $contact;
@@ -387,6 +388,54 @@ class Hetas_Certificate_Purchasing_Public {
 		$successful_data['postdata'] = $postdata;
 		
 		return $successful_data;
+
+	}
+
+	/**
+	 * Upon invoice created then associate invoice with a CRM payment
+	 * 
+	 * @param mixed $name
+	 * @return void
+	 */
+	public function create_ccp_payment($invoice, $contact, $response, $postdata) {
+
+		$access_token = $call->get_access_token();
+
+		$payment = array(
+			'van_PayerContact@odata.bind' => 'contacts(07fd65f2-3af7-ea11-80d7-00155d050f42)',
+			'van_invoiceId@odata.bind' => '',
+			'van_paymentcategory' => '',
+			'van_paymentmethod' => '',
+			'van_paidon' => '',
+			'van_amount' => ''
+		);
+
+		$curl = curl_init();
+
+		curl_setopt_array($curl, array(
+			CURLOPT_URL => CRM_RESOURCE . "/api/data/v8.2/van_payments",
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_ENCODING => "",
+			CURLOPT_MAXREDIRS => 10,
+			CURLOPT_TIMEOUT => 0,
+			CURLOPT_FOLLOWLOCATION => false,
+			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+			CURLOPT_CUSTOMREQUEST => "POST",
+			CURLOPT_POSTFIELDS => json_encode($payment),
+			CURLOPT_HTTPHEADER => array(
+				"Accept: application/json",
+				"OData-Version: 4.0",
+				"Authorization: $access_token",
+				"Cache-Control: no-cache",
+				"Content-Type: application/json",
+				"Cookie: ReqClientId=218ea227-0f2b-4c6d-84cc-ad7924b1c3e1"
+			),
+		));
+
+		$response = curl_exec($curl);
+
+		curl_close($curl);
+		echo $response;
 
 	}
 
