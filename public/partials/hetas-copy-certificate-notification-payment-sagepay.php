@@ -2,7 +2,7 @@
 
     $dynamics_crm_class = new Hetas_Dynamics_crm_Public('Hetas Dynamics CRM', '1.0');
     $public_class = new Hetas_Certificate_Purchasing_Public('Hetas Cert Purchasing', '1.0.0');
-    $product = $public_class->ccp_get_product_by_id('COPYBUS');
+    $product = $public_class->ccp_get_product_by_id('COPYCOC');
     $amount = number_format($product[0]->amount);
     $vat_rate = 20;
     $additionalVat = number_format($product[0]->amount / 100 * $vat_rate);
