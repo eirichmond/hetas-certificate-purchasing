@@ -29,4 +29,36 @@
 	 * practising this, we should strive to set a better example in our own work.
 	 */
 
+	 $(function() {
+
+		var payByCreditCardPanel = document.getElementById('pay-by-credit-card');
+		var payByCreditCardButton = document.querySelector('.pay-by-credit-card');
+
+		payByCreditCardButton.addEventListener('click', function(){
+			payByCreditCardPanel.style.display = 'block';
+		});
+
+		$('.coc-req').on('keyup',function () {
+			var cocRequired = document.querySelectorAll('.coc-req');
+			var paymentOptions = document.getElementById('payment-option');
+
+			cocRequired.forEach(element => {
+
+				var fieldValue = element.value;
+				if(!fieldValue) {
+					paymentOptions.style.display = 'none';
+				} else {
+					paymentOptions.style.display = 'block';
+				}
+			});
+		});
+	
+	 });
+
 })( jQuery );
+
+
+
+
+
+

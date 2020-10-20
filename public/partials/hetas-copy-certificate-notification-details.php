@@ -99,8 +99,8 @@
 
             <h2>Purchase Certificate</h2>
 
-            <a href="/hetas-copy-certificate-notification-purchase/?notification_id=<?php echo esc_html($results['notification']->van_name); ?>" class="btn btn-primary" role="button">Pay by Card</a>
-            <a href="#" class="btn btn-primary" role="button">Pay with PayPal</a>
+            <a href="/hetas-copy-certificate-notification-purchase/?notification_id=<?php echo esc_html($results['notification']->van_name); ?>" class="btn btn-primary" role="button">Purchase Checkout</a>
+
 
         </div>
     </div>

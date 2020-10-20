@@ -20,8 +20,8 @@
     </ul>
 
     <!-- Tab panes -->
-    <div class="tab-content">
-        <div role="tabpanel" class="tab-pane fade in active" id="by-postcode">
+    <div class="tab-content ccpsearchpanel">
+        <div role="tabpanel" class="tab-pane fade in active text-center" id="by-postcode">
 
             <p>
 
@@ -39,7 +39,7 @@
 
 
         </div>
-        <div role="tabpanel" class="tab-pane fade" id="by-hetas-installation-id">
+        <div role="tabpanel" class="tab-pane fade text-center" id="by-hetas-installation-id">
 
             <p>
 
@@ -56,7 +56,7 @@
             </p>
         
         </div>
-        <div role="tabpanel" class="tab-pane fade" id="by-installer-supplied-reference">
+        <div role="tabpanel" class="tab-pane fade text-center" id="by-installer-supplied-reference">
         
             <p>
 

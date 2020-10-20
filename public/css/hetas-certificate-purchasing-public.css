@@ -3,3 +3,26 @@
  * included in this file.
  */
 
+.processing {
+    background: #00000052;
+    width: 100vw;
+    height: 100vw;
+    position: absolute;
+    z-index: 99;
+    top: 0;
+}
+
+#payment-option {
+    padding: 0 1em;
+}
+#payment-option p {
+    padding: 10px;
+}
+
+.ccpsearchpanel {
+    padding: 30px;
+    background: #eeeeee;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+

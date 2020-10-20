@@ -208,7 +208,7 @@ class Hetas_Certificate_Purchasing_Public {
 		$postArray = array(
 			'cardDetails' => array(
 				'cardholderName' => $postdata['cardholderName'],
-				'cardNumber' => $postdata['cardNumber'],
+				'cardNumber' => str_replace(' ', '', $postdata['cardNumber']),
 				'expiryDate' => $postdata['expiryDate'],
 				'securityCode' => $postdata['securityCode'],
 			)
@@ -250,6 +250,8 @@ class Hetas_Certificate_Purchasing_Public {
 		  echo "cURL Error #:" . $err;
 		} else {
 			$response = json_decode($response);
+			error_log(json_encode($response));
+			wp_mail(array('elliott@squareonemd.co.uk','info@hetas.co.uk'), 'COC Error: generate_ccp_card_identifier', json_encode($response));
 		}
 
 		return $response;
@@ -257,6 +259,33 @@ class Hetas_Certificate_Purchasing_Public {
 
 	}
 
+	/**
+	 * Process ccp paypal transaction
+	 *
+	 * @param array $postdata
+	 * @return array $response
+	 */
+	public function process_ccp_paypal_transaction($postdata) {
+
+		$firstname = $postdata['firstname'];
+		$lastname = $postdata['lastname'];
+		$address_1 = $postdata['billingaddress1'];
+		$address_2 = $postdata['billingaddress2'];
+		$city = $postdata['billingaddresscity'];
+		$postcode = $postdata['billingaddresspostcode'];
+		$state = $postdata['billingaddressstate'];
+		$email = $postdata['emailaddress'];
+		$mobile = $postdata['mobilephone'];
+		$merchkey = $postdata['merchantsessionkey'];
+		$creditunits = $postdata['creditunits'];
+		$spamount = (int)$postdata['spamount'];
+
+		$response_data = $this->successful_ccp_payment($postdata, $response);
+
+		return $response_data;
+		
+	}
+	
 	/**
 	 * Process ccp sagepay transaction
 	 *
@@ -267,7 +296,7 @@ class Hetas_Certificate_Purchasing_Public {
 	public function process_ccp_sagepay_transaction($postdata, $test = null) {
 
 		$card_identifier = $this->generate_ccp_card_identifier($postdata, $test);
-
+		
 		$firstname = $postdata['firstname'];
 		$lastname = $postdata['lastname'];
 		$address_1 = $postdata['billingaddress1'];
@@ -305,8 +334,8 @@ class Hetas_Certificate_Purchasing_Public {
 				'state' => null
 			),
 			'entryMethod' => 'Ecommerce',
-			'apply3DSecure' => 'Disable',
-			'applyAvsCvcCheck' => 'Disable',
+			'apply3DSecure' => 'Force',
+			'applyAvsCvcCheck' => 'Force',
 			'description' => 'Copy Business Certificate Via Website',
 			'customerEmail' => $email,
 			'customerPhone' => $mobile,
@@ -360,10 +389,13 @@ class Hetas_Certificate_Purchasing_Public {
 		}
 
 		if ($response->statusCode == '0000') {
-			$successful_data = $this->successful_ccp_payment($postdata, $response);
+			$response_data = $this->successful_ccp_payment($postdata, $response);
+		} else {
+			error_log(json_encode($response_data));
+			wp_mail(array('elliott@squareonemd.co.uk','info@hetas.co.uk'), 'COC Error: process_ccp_sagepay_transaction', json_encode($response));
 		}
 
-		return $successful_data;
+		return $response_data;
 		
 	}
 
@@ -398,16 +430,26 @@ class Hetas_Certificate_Purchasing_Public {
 	 * @return void
 	 */
 	public function create_ccp_payment($invoice, $contact, $response, $postdata) {
+		if(null == $response) {
+			$van_paymentmethod = '100000007';
+		} else {
+			$van_paymentmethod = '100000004';
+		}
+
+		$call = new Dynamics_crm('crm','1.1.0');
 
 		$access_token = $call->get_access_token();
 
+		// convert the pence to pounds and pence
+		$price = $postdata['spamount'];
+		
 		$payment = array(
-			'van_PayerContact@odata.bind' => 'contacts(07fd65f2-3af7-ea11-80d7-00155d050f42)',
-			'van_invoiceId@odata.bind' => '',
-			'van_paymentcategory' => '',
-			'van_paymentmethod' => '',
-			'van_paidon' => '',
-			'van_amount' => ''
+			'van_PayerContact@odata.bind' => 'contacts('.$contact->value[0]->contactid.')',
+			'van_invoiceId@odata.bind' => 'invoices('.$invoice->invoiceid.')',
+			'van_paymentcategory' => '100000000',
+			'van_paymentmethod' => $van_paymentmethod,
+			'van_paidon' => $invoice->createdon,
+			'van_amount' => (int) number_format($price/100, 2)
 		);
 
 		$curl = curl_init();

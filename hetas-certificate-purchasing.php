@@ -58,8 +58,16 @@ function ccp_config() {
 			'slug' => 'hetas-copy-certificate-notification-purchase'
 		),
 		array(
+			'title' => 'HETAS Copy Certificate Notification Payment Sagepay',
+			'slug' => 'hetas-copy-certificate-notification-payment-sagepay'
+		),
+		array(
 			'title' => 'HETAS Copy Certificate Notification Payment Success',
 			'slug' => 'hetas-copy-certificate-notification-payment-success'
+		),
+		array(
+			'title' => 'HETAS Copy Certificate Notification Process PayPal',
+			'slug' => 'hetas-copy-certificate-notification-process-paypal'
 		),
 	);
 
