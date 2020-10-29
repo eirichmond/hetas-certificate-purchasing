@@ -19,6 +19,7 @@ get_header(); ?>
 
     <div class="bg-success" style="padding:20px;">
         <h4>Payment Successful</h4>
+        <p>You will receive an email with your certificate attached shortly.</p>
     </div>
 
     <?php

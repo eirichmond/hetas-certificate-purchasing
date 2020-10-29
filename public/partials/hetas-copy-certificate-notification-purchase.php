@@ -26,17 +26,14 @@
 
         <tbody>
             <tr>
-                <td><?php echo esc_html($product[1]->productnumber); ?></td>
                 <td><?php echo esc_html($product[1]->name); ?></td>
                 <td><p class="text-right">&pound; <?php echo esc_html(number_format($amount, 2)); ?></p></td>
             </tr>
             <tr>
-                <td></td>
                 <td><p class="text-right">VAT</p></td>
                 <td><p class="text-right">&pound; <?php echo esc_html(number_format($additionalVat, 2)); ?></p></td>
             </tr>
             <tr>
-                <td></td>
                 <td><p class="text-right">Total</p></td>
                 <td><p class="text-right">&pound; <?php echo esc_html(number_format($total, 2)); ?></p></td>
             </tr>
@@ -267,7 +264,7 @@
                         body: formData
                     }
                 ).then(function(response) {
-                    
+                    debugger;
                     return response.json();
                 }).then(function(resJson) {
 
@@ -282,7 +279,7 @@
 
                         var successContent = document.querySelector('.hetas-copy-certificate');
 
-                        successContent.innerHTML = '<h2>HETAS Copy Certificate Confirmation Page</h2><div class="bg-success" style="padding:20px;"><h4>Payment Successful</h4></div><p>' + JSON.stringify(resJson) + '</p>';
+                        successContent.innerHTML = '<h2>HETAS Copy Certificate Confirmation Page</h2><div class="bg-success" style="padding:20px;"><h4>Payment Successful</h4></div><p>You will receive an email with your certificate attached shortly' + JSON.stringify(resJson) + '</p>';
 
                     });
 

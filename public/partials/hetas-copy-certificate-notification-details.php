@@ -12,6 +12,10 @@
     <h2>HETAS Copy Certificate Details</h2>
 
     <div class="row">
+        <div class="bg-info" style="padding:20px; margin:20px;">If you believe any of the details on this page to be incorrect please <a href="mailto:<?php echo antispambot('support@hetas.co.uk'); ?>">email support</a> for further assistance.</div>
+    </div>
+
+    <div class="row">
         <div class="col-md-6">
         
             <table class="table table-striped">
@@ -95,9 +99,17 @@
     
 
     <div class="row">
-        <div class="col-md-12 text-right">
 
-            <h2>Purchase Certificate</h2>
+        <div class="col-md-6 text-left">
+
+
+            <a href="/hetas-copy-certificate-search/" class="btn btn-info" role="button">Back to search</a>
+
+
+        </div>
+
+        <div class="col-md-6 text-right">
+
 
             <a href="/hetas-copy-certificate-notification-purchase/?notification_id=<?php echo esc_html($results['notification']->van_name); ?>" class="btn btn-primary" role="button">Purchase Checkout</a>
 
