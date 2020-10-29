@@ -12,10 +12,10 @@
             <a href="#by-postcode" aria-controls="by-postcode" role="tab" data-toggle="tab">Postcode</a>
         </li>
         <li role="presentation">
-            <a href="#by-hetas-installation-id" aria-controls="by-hetas-installation-id" role="tab" data-toggle="tab">HETAS ID</a>
+            <a href="#by-hetas-installation-id" aria-controls="by-hetas-installation-id" role="tab" data-toggle="tab">Reference Number</a>
         </li>
         <li role="presentation">
-            <a href="#by-installer-supplied-reference" aria-controls="by-installer-supplied-reference" role="tab" data-toggle="tab">Installer Reference</a>
+            <a href="#by-installer-supplied-reference" aria-controls="by-installer-supplied-reference" role="tab" data-toggle="tab">Installer Supplied Reference</a>
         </li>
     </ul>
 
