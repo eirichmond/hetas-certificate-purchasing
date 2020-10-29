@@ -412,6 +412,9 @@ class Hetas_Certificate_Purchasing_Public {
 		$invoice = $this->create_ccp_invoice($contact, $response, $postdata); // create invoice
  		$invoice_items = $this->create_ccp_invoice_items($invoice, $contact, $response, $postdata); // create invoice items
 		$payment = $this->create_ccp_payment($invoice, $contact, $response, $postdata);
+		// update notification by id with 
+		// set van_onlinecoc to 1
+		// populate van_emailcoc with the email address entered on the web form.
 
 		$successful_data = array();
 		$successful_data['invoice'] = $invoice;
