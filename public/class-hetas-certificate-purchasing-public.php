@@ -415,6 +415,8 @@ class Hetas_Certificate_Purchasing_Public {
 		// update notification by id with 
 		// set van_onlinecoc to 1
 		// populate van_emailcoc with the email address entered on the web form.
+		$this->update_ccp_notification_with_users_emailaddress($postdata["emailaddress"],$postdata["notification_id"]);
+
 
 		$successful_data = array();
 		$successful_data['invoice'] = $invoice;
@@ -423,6 +425,91 @@ class Hetas_Certificate_Purchasing_Public {
 		$successful_data['postdata'] = $postdata;
 		
 		return $successful_data;
+
+	}
+
+	/**
+	 * Update the notification record with the purchasers email address
+	 *
+	 * @param string $email
+	 * @param string $notification_id
+	 * @return void
+	 */
+	public function update_ccp_notification_with_users_emailaddress($email, $van_name_id) {
+		$call = new Dynamics_crm('crm','1.1.0');
+		$access_token = $call->get_access_token();
+
+		$curl = curl_init();
+
+		$request = CRM_RESOURCE . '/api/data/v8.2/van_notifications?$filter=van_name%20eq%20%27'.$van_name_id.'%27';
+
+		curl_setopt_array($curl, array(
+			CURLOPT_URL => $request,
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_ENCODING => "",
+			CURLOPT_MAXREDIRS => 10,
+			CURLOPT_TIMEOUT => 0,
+			CURLOPT_FOLLOWLOCATION => false,
+			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+			CURLOPT_CUSTOMREQUEST => "GET",
+			CURLOPT_HTTPHEADER => array(
+				"Accept: application/json",
+				"OData-Version: 4.0",
+				"Authorization: $access_token",
+				"Cache-Control: no-cache",
+				"Cookie: ReqClientId=218ea227-0f2b-4c6d-84cc-ad7924b1c3e1"
+			),
+		));
+
+		$response = curl_exec($curl);
+		$err = curl_error($curl);
+
+		curl_close($curl);
+
+		if ($err) {
+		  	error_log('cURL Error #:' . $err);
+		} else {
+			$response = json_decode($response);
+		}
+
+		// set the notification id to update
+		$notification_id = $response->value[0]->van_notificationid;
+		
+		// initiate a new curl request to update the notification
+		$curl = curl_init();
+
+		curl_setopt_array($curl, array(
+			CURLOPT_URL => CRM_RESOURCE . "/api/data/v8.2/van_notifications($notification_id)",
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_ENCODING => "",
+			CURLOPT_MAXREDIRS => 10,
+			CURLOPT_TIMEOUT => 0,
+			CURLOPT_FOLLOWLOCATION => false,
+			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+			CURLOPT_CUSTOMREQUEST => "PATCH",
+			CURLOPT_POSTFIELDS =>"{\n    \"van_onlinecoc\": true,\n    \"van_emailcoc\": \"$email\"\n}",
+			CURLOPT_HTTPHEADER => array(
+				"Accept: application/json",
+				"OData-Version: 4.0",
+				"Authorization: $access_token",
+				"Cache-Control: no-cache",
+				"Content-Type: application/json",
+				"Cookie: ReqClientId=218ea227-0f2b-4c6d-84cc-ad7924b1c3e1"
+			),
+		));
+
+		$response = curl_exec($curl);
+
+		$err = curl_error($curl);
+
+		curl_close($curl);
+
+		if ($err) {
+		  	error_log('cURL Error #:' . $err);
+		} else {
+			error_log('Notification updated');
+		}
+
 
 	}
 
