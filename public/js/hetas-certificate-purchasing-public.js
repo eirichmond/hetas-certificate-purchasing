@@ -34,9 +34,11 @@
 		var payByCreditCardPanel = document.getElementById('pay-by-credit-card');
 		var payByCreditCardButton = document.querySelector('.pay-by-credit-card');
 
-		payByCreditCardButton.addEventListener('click', function(){
-			payByCreditCardPanel.style.display = 'block';
-		});
+		if(payByCreditCardButton) {
+			payByCreditCardButton.addEventListener('click', function(){
+				payByCreditCardPanel.style.display = 'block';
+			});
+		}
 
 		$('.coc-req').on('keyup',function () {
 			var cocRequired = document.querySelectorAll('.coc-req');

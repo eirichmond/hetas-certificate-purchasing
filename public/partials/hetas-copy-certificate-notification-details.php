@@ -42,17 +42,17 @@
 
                 <tr>
                     <td class="text-right"><strong>Address Line 1:</strong></td>
-                    <td><?php echo esc_html($results['notification']->ak_x002e_address1_line1); ?></td>
+                    <td><?php echo esc_html($results['notification']->van_addressline1); ?></td>
                 </tr>
 
                 <tr>
                     <td class="text-right"><strong>Address Line 2:</strong></td>
-                    <td><?php echo esc_html($results['notification']->ak_x002e_address1_line2); ?></td>
+                    <td><?php echo esc_html($results['notification']->van_addressline2); ?></td>
                 </tr>
 
                 <tr>
                     <td class="text-right"><strong>Town / City:</strong></td>
-                    <td><?php echo esc_html($results['notification']->van_dispatchtowncity); ?></td>
+                    <td><?php echo esc_html($results['notification']->van_towncity); ?></td>
                 </tr>
 
                 <tr>
