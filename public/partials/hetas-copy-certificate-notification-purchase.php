@@ -264,7 +264,6 @@
                         body: formData
                     }
                 ).then(function(response) {
-                    debugger;
                     return response.json();
                 }).then(function(resJson) {
 
