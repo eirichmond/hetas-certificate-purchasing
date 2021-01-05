@@ -577,7 +577,7 @@ class Hetas_Certificate_Purchasing_Public {
 
 		$object = array(
 			'invoiceid@odata.bind' => 'invoices('.$invoice->invoiceid.')',
-			'productid@odata.bind' => 'products(3b2f255a-abab-e911-80d3-00155d0515b7)',
+			'productid@odata.bind' => 'products(3d2f255a-abab-e911-80d3-00155d0515b7)',
 			'uomid@odata.bind' => 'uoms(c286415d-9ecd-43b6-88bc-15cd9c04ee50)',
 			'quantity' => 1,
 			'priceperunit' => 15		

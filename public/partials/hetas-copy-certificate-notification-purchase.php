@@ -47,51 +47,52 @@
 
         <div class="personal-details form-horizontal">
             <h2>Your Details</h2>
+            <small>Required fields marked with <sup class="redastrix">*</sup></small>
 
             <div class="form-group">
-                <label for="firstname" class="col-sm-2 control-label">First Name</label>
+                <label for="firstname" class="col-sm-2 control-label">First Name <sup class="redastrix">*</sup></label>
                 <div class="col-sm-8">
                     <input type="text" class="form-control coc-req" id="firstname" name="firstname" placeholder="Firstname" value="" required>
                 </div>
             </div>
             <div class="form-group">
-                <label for="lastname" class="col-sm-2 control-label">Last Name</label>
+                <label for="lastname" class="col-sm-2 control-label">Last Name <sup class="redastrix">*</sup></label>
                 <div class="col-sm-8">
                     <input type="text" class="form-control coc-req" id="lastname" name="lastname" placeholder="Lastname" value="" required>
                 </div>
             </div>
             <div class="form-group">
-                <label for="billingaddress1" class="col-sm-2 control-label">Address Line 1</label>
+                <label for="billingaddress1" class="col-sm-2 control-label">Address Line 1 <sup class="redastrix">*</sup></label>
                 <div class="col-sm-8">
                     <input type="text" class="form-control coc-req" id="billingaddress1" name="billingaddress1" placeholder="Address Line 1" value="" required>
                 </div>
             </div>
             <div class="form-group">
-                <label for="billingaddress2" class="col-sm-2 control-label">Address Line 2</label>
+                <label for="billingaddress2" class="col-sm-2 control-label">Address Line 2 <sup class="redastrix">*</sup></label>
                 <div class="col-sm-8">
                     <input type="text" class="form-control" id="billingaddress2" name="billingaddress2" placeholder="Address Line 2" value="">
                 </div>
             </div>
             <div class="form-group">
-                <label for="billingaddresscity" class="col-sm-2 control-label">City</label>
+                <label for="billingaddresscity" class="col-sm-2 control-label">City <sup class="redastrix">*</sup></label>
                 <div class="col-sm-8">
                     <input type="text" class="form-control coc-req" id="billingaddresscity" name="billingaddresscity" placeholder="City" value="" required>
                 </div>
             </div>
             <div class="form-group">
-                <label for="billingaddresspostcode" class="col-sm-2 control-label">Postcode</label>
+                <label for="billingaddresspostcode" class="col-sm-2 control-label">Postcode <sup class="redastrix">*</sup></label>
                 <div class="col-sm-8">
                     <input type="text" class="form-control coc-req" id="billingaddresspostcode" name="billingaddresspostcode" placeholder="Postcode" value="" required>
                 </div>
             </div>
             <div class="form-group">
-                <label for="billingaddressstate" class="col-sm-2 control-label">County</label>
+                <label for="billingaddressstate" class="col-sm-2 control-label">County <sup class="redastrix">*</sup></label>
                 <div class="col-sm-8">
                     <input type="text" class="form-control" id="billingaddressstate" name="billingaddressstate" placeholder="County" value="">
                 </div>
             </div>
             <div class="form-group">
-                <label for="emailaddress" class="col-sm-2 control-label">Email</label>
+                <label for="emailaddress" class="col-sm-2 control-label">Email <sup class="redastrix">*</sup></label>
                 <div class="col-sm-8">
                     <input type="text" class="form-control coc-req" id="emailaddress" name="emailaddress" placeholder="Email" value="" required>
                 </div>
@@ -105,7 +106,7 @@
             <div class="form-group">
                 <label for="mobilephone" class="col-sm-2 control-label">Mobile</label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control coc-req" id="mobilephone" name="mobilephone" placeholder="Mobile" value="" required>
+                    <input type="text" class="form-control" id="mobilephone" name="mobilephone" placeholder="Mobile" value="">
                 </div>
                 <div class="col-sm-2">
 
@@ -120,7 +121,7 @@
                 <label class="col-sm-2 control-label"> Marketing Preferences</label>
 
                 <div class="checkbox">
-                    <label for="donotemail" class="col-sm-8 control-label"><input type="checkbox" id="donotemail" name="donotemail" > I would like to subscribe to the HETAS newsletter which includestips and advice for you as the consumer as well as relevant safety tips for your appliance. HETAS will not share your details with 3rd parties.</label>
+                    <label for="donotemail" class="col-sm-8 control-label"><input type="checkbox" id="donotemail" name="donotemail" > I would like to subscribe to the HETAS newsletter which includes tips and advice for you as the consumer as well as relevant safety tips for your appliance. HETAS will not share your details with 3rd parties.</label>
                 </div>
 
             </div>
@@ -264,7 +265,6 @@
                         body: formData
                     }
                 ).then(function(response) {
-                    debugger;
                     return response.json();
                 }).then(function(resJson) {
 
@@ -279,7 +279,7 @@
 
                         var successContent = document.querySelector('.hetas-copy-certificate');
 
-                        successContent.innerHTML = '<h2>HETAS Copy Certificate Confirmation Page</h2><div class="bg-success" style="padding:20px;"><h4>Payment Successful</h4></div><p>You will receive an email with your certificate attached shortly' + JSON.stringify(resJson) + '</p>';
+                        successContent.innerHTML = '<h2>HETAS Copy Certificate Confirmation Page</h2><div class="bg-success" style="padding:20px;"><h4>Payment Successful</h4> <p>You will receive an email with your certificate attached shortly</p></div>';
 
                     });
 

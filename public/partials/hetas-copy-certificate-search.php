@@ -46,7 +46,7 @@
                 <form class="form-inline" action="/hetas-copy-certificate-results/" method="post">
                     <div class="form-group">
                         <label class="sr-only" for="by-hetas-id">by HETAS ID</label>
-                        <input type="text" class="form-control" id="by-hetas-id" name="van_name" placeholder="by HETAS ID">
+                        <input type="text" class="form-control" id="by-hetas-id" name="van_name" placeholder="by Reference Number">
                     </div>
                     <input type="hidden" name="action" value="sbhi">
                     <?php wp_nonce_field( 'ccp_front_end_post_action', 'ccp_front_end_post' ); ?>

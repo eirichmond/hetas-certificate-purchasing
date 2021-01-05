@@ -12,7 +12,6 @@
     //$merchantsessionkey = $dynamics_crm_class->get_sagepay_merchant_session_key_live();
     $merchantsessionkey = $dynamics_crm_class->get_sagepay_merchant_session_key();
 
-
 ?>
 
 <script src="https://www.paypal.com/sdk/js?client-id=AfAECsumnRbk0gEjiShXSyaJS-8kIFA5EOvmKoe99Uef9UXPlmAghW2J21ksjX-xAyzclp0t3zDhF3HG&currency=GBP&intent=capture&buyer-country=GB"> // Required. Replace SB_CLIENT_ID with your sandbox client ID.</script>
@@ -110,7 +109,7 @@ delivered.">?</button>
             <div class="form-group">
                 <label for="mobilephone" class="col-sm-2 control-label">Mobile</label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control coc-req" id="mobilephone" name="mobilephone" placeholder="Mobile" value="" required>
+                    <input type="text" class="form-control" id="mobilephone" name="mobilephone" placeholder="Mobile" value="">
                 </div>
                 <div class="col-sm-2">
 

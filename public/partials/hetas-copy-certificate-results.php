@@ -17,10 +17,10 @@ $results = $public_class->hetas_ccp_form_process();
                 <a href="#by-postcode" aria-controls="by-postcode" role="tab" data-toggle="tab">Postcode</a>
             </li>
             <li role="presentation">
-                <a href="#by-hetas-installation-id" aria-controls="by-hetas-installation-id" role="tab" data-toggle="tab">HETAS ID</a>
+                <a href="#by-hetas-installation-id" aria-controls="by-hetas-installation-id" role="tab" data-toggle="tab">Reference Number</a>
             </li>
             <li role="presentation">
-                <a href="#by-installer-supplied-reference" aria-controls="by-installer-supplied-reference" role="tab" data-toggle="tab">Installer Reference</a>
+                <a href="#by-installer-supplied-reference" aria-controls="by-installer-supplied-reference" role="tab" data-toggle="tab">Installer Supplied Reference</a>
             </li>
         </ul>
 
@@ -51,7 +51,7 @@ $results = $public_class->hetas_ccp_form_process();
                     <form class="form-inline" action="/hetas-copy-certificate-results/" method="post">
                         <div class="form-group">
                             <label class="sr-only" for="by-hetas-id">by HETAS ID</label>
-                            <input type="text" class="form-control" id="by-hetas-id" name="van_name" placeholder="by HETAS ID">
+                            <input type="text" class="form-control" id="by-hetas-id" name="van_name" placeholder="by Reference Number">
                         </div>
                         <input type="hidden" name="action" value="sbhi">
                         <?php wp_nonce_field( 'ccp_front_end_post_action', 'ccp_front_end_post' ); ?>
@@ -101,7 +101,7 @@ $results = $public_class->hetas_ccp_form_process();
                 <td><?php echo esc_html($result->ak_x002e_name); ?></td>
                 <td><?php echo esc_html($result->van_installersuppliedreference); ?></td>
                 <td><?php echo esc_html(date('d-m-Y', strtotime($result->van_workcompletiondate))); ?></td>
-                <td><?php echo esc_html($result->ak_x002e_address1_line1); ?></td>
+                <td><?php echo esc_html($result->van_addressline1); ?></td>
                 <td><?php echo esc_html($result->van_postcode); ?></td>
             </tr>
         <?php } ?>

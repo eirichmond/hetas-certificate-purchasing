@@ -23,9 +23,9 @@ get_header(); ?>
     </div>
 
     <?php
-    echo '<pre>';
-    print_r($response);
-    echo '</pre>';
+    // echo '<pre>';
+    // print_r($response);
+    // echo '</pre>';
     ?>
 
 <?php } else { ?>
