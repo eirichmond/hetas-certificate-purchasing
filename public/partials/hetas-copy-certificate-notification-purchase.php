@@ -17,6 +17,7 @@
 
 <script src="https://www.paypal.com/sdk/js?client-id=AfAECsumnRbk0gEjiShXSyaJS-8kIFA5EOvmKoe99Uef9UXPlmAghW2J21ksjX-xAyzclp0t3zDhF3HG&currency=GBP&intent=capture&buyer-country=GB"> // Required. Replace SB_CLIENT_ID with your sandbox client ID.</script>
 
+<div class="processing" style="display:none;"><img src="https://www.hetas.co.uk/wp-content/plugins/hetas-dynamics-crm/public/images/throbber_12.gif" alt="Loading_icon"></div>
 
 <div class="hetas-copy-certificate">
 
@@ -238,8 +239,7 @@
             },
             onApprove: function(data, actions) {
 
-// var bodyElement = document.querySelector('.hetas-copy-certificate');
-// bodyElement.innerHTML += '<div class="processing"></div>';
+                var processing = document.querySelector('.processing');
 
                 let formData = new FormData();
                 formData.append('firstname', document.getElementById('firstname').value);
@@ -257,7 +257,9 @@
                 formData.append('notification_id', document.getElementById('notification_id').value);
                 formData.append('payment_type', 'paypal');
                 formData.append('coc_nonce', document.getElementById('coc_nonce').value);
-                
+
+                var processing = document.querySelector('.processing');
+                processing.style.display = 'block';
                 return fetch(
                     '/hetas-copy-certificate-notification-process-paypal/',
                     {
@@ -268,12 +270,14 @@
                     return response.json();
                 }).then(function(resJson) {
 
-
                     // This function captures the funds from the transaction.
                     return actions.order.capture().then(function(details) {
                         // This function shows a transaction success message to your buyer.
                         // alert('Transaction completed by ' + details.payer.name.given_name);
                         // window.location.href = '/hetas-copy-certificate-notification-payment-success/';
+                        var processing = document.querySelector('.processing');
+                        processing.style.display = 'none';
+
                         console.log(details);
                         console.log(resJson);
 
@@ -295,6 +299,10 @@
 
         }).render('#paypal-button-container');// This function displays Smart Payment Buttons on your web page.
     </script>
+
+
+</div>
+
 
 
 <?php get_footer(); ?>

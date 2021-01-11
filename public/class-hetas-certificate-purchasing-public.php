@@ -474,6 +474,12 @@ class Hetas_Certificate_Purchasing_Public {
 
 		// set the notification id to update
 		$notification_id = $response->value[0]->van_notificationid;
+
+		$patchfeilds = array(
+			'van_onlinecoc' => true,
+			'van_emailcoc' => $email
+		);
+		$patchfeilds = json_encode($patchfeilds);
 		
 		// initiate a new curl request to update the notification
 		$curl = curl_init();
@@ -481,20 +487,20 @@ class Hetas_Certificate_Purchasing_Public {
 		curl_setopt_array($curl, array(
 			CURLOPT_URL => CRM_RESOURCE . "/api/data/v8.2/van_notifications($notification_id)",
 			CURLOPT_RETURNTRANSFER => true,
-			CURLOPT_ENCODING => "",
+			CURLOPT_ENCODING => '',
 			CURLOPT_MAXREDIRS => 10,
 			CURLOPT_TIMEOUT => 0,
 			CURLOPT_FOLLOWLOCATION => false,
 			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-			CURLOPT_CUSTOMREQUEST => "PATCH",
-			CURLOPT_POSTFIELDS =>"{\n    \"van_onlinecoc\": true,\n    \"van_emailcoc\": \"$email\"\n}",
+			CURLOPT_CUSTOMREQUEST => 'PATCH',
+			CURLOPT_POSTFIELDS => $patchfeilds,
 			CURLOPT_HTTPHEADER => array(
-				"Accept: application/json",
-				"OData-Version: 4.0",
-				"Authorization: $access_token",
-				"Cache-Control: no-cache",
-				"Content-Type: application/json",
-				"Cookie: ReqClientId=218ea227-0f2b-4c6d-84cc-ad7924b1c3e1"
+			  "Accept: application/json",
+			  "OData-Version: 4.0",
+			  "Authorization: $access_token",
+			  "Cache-Control: no-cache",
+			  "Content-Type: application/json",
+			  "Cookie: ReqClientId=218ea227-0f2b-4c6d-84cc-ad7924b1c3e1"
 			),
 		));
 
