@@ -183,6 +183,7 @@
                     <input type="hidden" id="spamount" name="spamount" value="<?php echo esc_html($charge); ?>">
                     <input type="hidden" id="sub_total" name="sub_total" value="<?php echo esc_html($sub_total); ?>">
                     <input type="hidden" id="notification_id" name="notification_id" value="<?php echo esc_html($_GET['notification_id']); ?>">
+                    <input type="hidden" id="notification_uid" name="notification_uid" value="<?php echo esc_html($_GET['notification_uid']); ?>">
                     <?php wp_nonce_field( 'coc_action', 'coc_nonce' ); ?>
                     <div id="submit-container" class="text-right">
                         <input class="btn btn-primary" type="submit" value="Checkout">
@@ -255,6 +256,7 @@
                 formData.append('spamount', document.getElementById('spamount').value);
                 formData.append('sub_total', document.getElementById('sub_total').value);
                 formData.append('notification_id', document.getElementById('notification_id').value);
+                formData.append('notification_uid', document.getElementById('notification_uid').value);
                 formData.append('payment_type', 'paypal');
                 formData.append('coc_nonce', document.getElementById('coc_nonce').value);
 

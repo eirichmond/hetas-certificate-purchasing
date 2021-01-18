@@ -637,6 +637,7 @@ class Hetas_Certificate_Purchasing_Public {
 			'transactioncurrencyid@odata.bind' => 'transactioncurrencies(12565274-81B2-E811-80D2-00155D050FFD)',
 			'pricelevelid@odata.bind' => 'pricelevels(7C11153C-B03E-E911-80D3-00155D0515B7)',
 			'customerid_contact@odata.bind' => 'contacts('.$contact->value[0]->contactid.')',
+			'van_NotificationId@odata.bind' => 'van_notifications('.$postdata['notification_uid'].')',
 			'van_invoicetype' => '100000000',
 			'name' => 'Conf: ' . $postdata['notification_id'],
 			'billto_line1' => $postdata['billingaddress1'],
