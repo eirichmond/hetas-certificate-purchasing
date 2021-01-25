@@ -412,10 +412,12 @@ class Hetas_Certificate_Purchasing_Public {
 		$invoice = $this->create_ccp_invoice($contact, $response, $postdata); // create invoice
  		$invoice_items = $this->create_ccp_invoice_items($invoice, $contact, $response, $postdata); // create invoice items
 		$payment = $this->create_ccp_payment($invoice, $contact, $response, $postdata);
-		// update notification by id with 
-		// set van_onlinecoc to 1
-		// populate van_emailcoc with the email address entered on the web form.
-		$this->update_ccp_notification_with_users_emailaddress($postdata["emailaddress"],$postdata["notification_id"]);
+		// update notification by id with set van_onlinecoc to 1
+		// & populate van_emailcoc with the email address entered on the web form.
+		// if invoice is paid
+		if($this->invoice_is_paid($invoice)) {
+			$this->update_ccp_notification_with_users_emailaddress($postdata["emailaddress"],$postdata["notification_id"]);
+		}
 
 
 		$successful_data = array();
@@ -425,6 +427,79 @@ class Hetas_Certificate_Purchasing_Public {
 		$successful_data['postdata'] = $postdata;
 		
 		return $successful_data;
+
+	}
+	
+	/**
+	 * Get invoice by invoice number
+	 *
+	 * @param string $invoicenumber
+	 * @return object
+	 */
+	public function get_invoice_by_invoicenumber($invoicenumber) {
+		$call = new Dynamics_crm('crm','1.1.0');
+		$access_token = $call->get_access_token();
+
+		$curl = curl_init();
+
+		$request = CRM_RESOURCE . '/api/data/v8.2/invoices?$filter=invoicenumber%20eq%20%27'.$invoicenumber.'%27';
+
+		curl_setopt_array($curl, array(
+				CURLOPT_URL => $request,
+				CURLOPT_RETURNTRANSFER => true,
+				CURLOPT_ENCODING => '',
+				CURLOPT_MAXREDIRS => 10,
+				CURLOPT_TIMEOUT => 30,
+				CURLOPT_FOLLOWLOCATION => false,
+				CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+				CURLOPT_CUSTOMREQUEST => 'GET',
+				CURLOPT_HTTPHEADER => array(
+						"Accept: application/json",
+						"OData-Version: 4.0",
+						"Authorization: $access_token",
+						"Cache-Control: no-cache",
+						"Cookie: ReqClientId=218ea227-0f2b-4c6d-84cc-ad7924b1c3e1"
+				),
+		));
+
+		$response = curl_exec($curl);
+
+		$err = curl_error($curl);
+
+		curl_close($curl);
+
+		if ($err) {
+			error_log("cURL Error #:" . $err);
+		} else {
+			$response = json_decode($response);
+		}
+
+		return $response;
+
+	}
+	
+	/**
+	 * Check if an invoice is paid
+	 *
+	 * @param object $invoid
+	 * @return boolean
+	 */
+	public function invoice_is_paid($invoice) {
+		
+		$invoice = $this->get_invoice_by_invoicenumber($invoice->invoicenumber);
+		$invoice = $invoice->value[0];
+
+		if($invoice->invoicenumber == '') {
+			error_log('Error: Tried to check invoice but there was no invoicenumber');
+			return false;
+		}
+		if($invoice->statecode != 2) {
+			error_log('Error: Invoice is not set to paid');
+			return false;
+		}
+		if($invoice->statecode == 2) {
+			return true;
+		}
 
 	}
 
@@ -619,7 +694,7 @@ class Hetas_Certificate_Purchasing_Public {
 		curl_close($curl);
 
 		if ($err) {
-		  echo "cURL Error #:" . $err;
+		  	error_log("cURL Error #:" . $err);
 		} else {
 			$response = json_decode($response);
 		}
