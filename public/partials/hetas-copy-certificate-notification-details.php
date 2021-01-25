@@ -51,6 +51,11 @@
                 </tr>
 
                 <tr>
+                    <td class="text-right"><strong>Address Line 3:</strong></td>
+                    <td><?php echo esc_html($results['notification']->van_addressline3); ?></td>
+                </tr>
+
+                <tr>
                     <td class="text-right"><strong>Town / City:</strong></td>
                     <td><?php echo esc_html($results['notification']->van_towncity); ?></td>
                 </tr>
