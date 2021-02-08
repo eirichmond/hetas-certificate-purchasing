@@ -14,7 +14,7 @@
 
 ?>
 
-<script src="https://www.paypal.com/sdk/js?client-id=AfAECsumnRbk0gEjiShXSyaJS-8kIFA5EOvmKoe99Uef9UXPlmAghW2J21ksjX-xAyzclp0t3zDhF3HG&currency=GBP&intent=capture&buyer-country=GB"> // Required. Replace SB_CLIENT_ID with your sandbox client ID.</script>
+<script src="https://www.paypal.com/sdk/js?client-id=<?php echo esc_attr( PAYPAL_CLIENT_ID ); ?>&currency=GBP&intent=capture"></script>
 
 
 <div class="hetas-copy-certificate">

@@ -9,13 +9,16 @@
     $total = $product[0]->amount / 100 * $vat_rate + $product[0]->amount;
     $charge = $total * 100;
     $sub_total = $amount * 100;
-    //$merchantsessionkey = $dynamics_crm_class->get_sagepay_merchant_session_key_live();
-    $merchantsessionkey = $dynamics_crm_class->get_sagepay_merchant_session_key();
+    if(defined('SAGEPAY_TEST_MODE') && SAGEPAY_TEST_MODE == true) {
+        $merchantsessionkey = $dynamics_crm_class->get_sagepay_merchant_session_key();
+    } else {
+        $merchantsessionkey = $dynamics_crm_class->get_sagepay_merchant_session_key_live();
+    }
 
 
 ?>
 
-<script src="https://www.paypal.com/sdk/js?client-id=AfAECsumnRbk0gEjiShXSyaJS-8kIFA5EOvmKoe99Uef9UXPlmAghW2J21ksjX-xAyzclp0t3zDhF3HG&currency=GBP&intent=capture&buyer-country=GB"> // Required. Replace SB_CLIENT_ID with your sandbox client ID.</script>
+<script src="https://www.paypal.com/sdk/js?client-id=<?php echo esc_attr( PAYPAL_CLIENT_ID ); ?>&currency=GBP&intent=capture"></script>
 
 <div class="processing" style="display:none;"><img src="https://www.hetas.co.uk/wp-content/plugins/hetas-dynamics-crm/public/images/throbber_12.gif" alt="Loading_icon"></div>
 
@@ -280,22 +283,23 @@
                         var processing = document.querySelector('.processing');
                         processing.style.display = 'none';
 
-                        console.log(details);
-                        console.log(resJson);
+                        // console.log(details);
+                        // console.log(resJson);
 
                         var successContent = document.querySelector('.hetas-copy-certificate');
 
-                        successContent.innerHTML = '<h2>HETAS Copy Certificate Confirmation Page</h2><div class="bg-success" style="padding:20px;"><h4>Payment Successful</h4> <p>You will receive an email with your certificate attached shortly</p></div>';
+                        successContent.innerHTML = '<h2>HETAS Copy Certificate Confirmation Page</h2><div id="ccp-successful-payment" class="bg-success" data_invoicenumber="'+resJson.invoice.invoicenumber+'" data_emailaddress="'+resJson.postdata.emailaddress+'" data_notificationid="'+resJson.postdata.notification_id+'" style="padding:20px;"><h4>Payment Successful</h4> <p>You will receive an email with your certificate attached shortly</p></div>';
+                        
+                        async_update_ccp_notification(resJson.invoice.invoicenumber, resJson.postdata.emailaddress, resJson.postdata.notification_id);
 
                     });
-
 
 
                     // window.location.href = '/hetas-copy-certificate-notification-payment-success/';
                     // return resJson;
                 });
 
-
+                
 
             }
 

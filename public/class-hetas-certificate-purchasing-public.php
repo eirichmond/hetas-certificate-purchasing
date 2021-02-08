@@ -97,6 +97,7 @@ class Hetas_Certificate_Purchasing_Public {
 		 */
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/hetas-certificate-purchasing-public.js', array( 'jquery' ), $this->version, false );
+		wp_localize_script( $this->plugin_name, 'async_object', array( 'ajax_url' => admin_url( 'admin-ajax.php' ), 'nextNonce' => wp_create_nonce( 'async-nonce' ) ) );
 
 		if(is_page('hetas-copy-certificate-notification-purchase')) {
 			//wp_enqueue_script( 'sagepay', 'https://pi-live.sagepay.com/api/v1/js/sagepay.js', array( '' ), $this->version, false );
@@ -280,7 +281,11 @@ class Hetas_Certificate_Purchasing_Public {
 		$creditunits = $postdata['creditunits'];
 		$spamount = (int)$postdata['spamount'];
 
+		error_log('PayPay Payment: initiated with merchkey ' . $merchkey );
+
 		$response_data = $this->successful_ccp_payment($postdata, $response);
+
+		
 
 		return $response_data;
 		
@@ -391,7 +396,7 @@ class Hetas_Certificate_Purchasing_Public {
 		if ($response->statusCode == '0000') {
 			$response_data = $this->successful_ccp_payment($postdata, $response);
 		} else {
-			error_log(json_encode($response_data));
+			error_log('Saypay Payment: ' . json_encode($response));
 			wp_mail(array('elliott@squareonemd.co.uk','info@hetas.co.uk'), 'COC Error: process_ccp_sagepay_transaction', json_encode($response));
 		}
 
@@ -410,21 +415,24 @@ class Hetas_Certificate_Purchasing_Public {
 			$contact = $this->create_new_contact($postdata);
 		}
 		$invoice = $this->create_ccp_invoice($contact, $response, $postdata); // create invoice
+		error_log('Invoice created');
+		error_log('Inv No: ' . $invoice->invoicenumber . ', Name: ' . $invoice->name);
  		$invoice_items = $this->create_ccp_invoice_items($invoice, $contact, $response, $postdata); // create invoice items
+		error_log('Invoice items binded');
 		$payment = $this->create_ccp_payment($invoice, $contact, $response, $postdata);
+		error_log('Payment created delay started');
 		// update notification by id with set van_onlinecoc to 1
 		// & populate van_emailcoc with the email address entered on the web form.
 		// if invoice is paid
-		if($this->invoice_is_paid($invoice)) {
-			$this->update_ccp_notification_with_users_emailaddress($postdata["emailaddress"],$postdata["notification_id"]);
-		}
-
+		
 
 		$successful_data = array();
 		$successful_data['invoice'] = $invoice;
 		$successful_data['contact'] = $contact;
 		$successful_data['response'] = $response;
 		$successful_data['postdata'] = $postdata;
+
+
 		
 		return $successful_data;
 
@@ -484,9 +492,9 @@ class Hetas_Certificate_Purchasing_Public {
 	 * @param object $invoid
 	 * @return boolean
 	 */
-	public function invoice_is_paid($invoice) {
+	public function invoice_is_paid($invoicenumber) {
 		
-		$invoice = $this->get_invoice_by_invoicenumber($invoice->invoicenumber);
+		$invoice = $this->get_invoice_by_invoicenumber($invoicenumber);
 		$invoice = $invoice->value[0];
 
 		if($invoice->invoicenumber == '') {
@@ -500,6 +508,35 @@ class Hetas_Certificate_Purchasing_Public {
 		if($invoice->statecode == 2) {
 			return true;
 		}
+
+	}
+
+	/**
+	 * an AJAX action that checks if an invoice is set to paid,
+	 * set with a 60 second delay to allow CRM to run through its workflow
+	 * that can take upto 40 seconds to complete, this process allows the CRM
+	 * to register and send out the Copy Certs without duplications, it is triggered
+	 * by setting the email address and the notification ID on the Notification
+	 *
+	 * @return void
+	 */
+	public function async_update_ccp_notification_with_users_emailaddress() {
+
+		$nonce = $_POST['nextNonce'];
+		if ( ! wp_verify_nonce( $nonce, 'async-nonce' ) ) {
+			die ( 'Busted!' );
+		}
+		
+		error_log('waiting 60 seconds before ready!');
+		sleep(60);
+		if($this->invoice_is_paid($_POST['invoicenumber'])) {
+			error_log('Paid successful, now setting COC checkboxes');
+			$this->update_ccp_notification_with_users_emailaddress($_POST['emailaddress'],$_POST['notificationid']);
+		}
+		error_log('finished');
+		// Don't forget to stop execution afterward.
+		wp_die();
+		
 
 	}
 
