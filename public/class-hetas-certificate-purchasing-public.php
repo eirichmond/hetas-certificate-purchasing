@@ -100,8 +100,11 @@ class Hetas_Certificate_Purchasing_Public {
 		wp_localize_script( $this->plugin_name, 'async_object', array( 'ajax_url' => admin_url( 'admin-ajax.php' ), 'nextNonce' => wp_create_nonce( 'async-nonce' ) ) );
 
 		if(is_page('hetas-copy-certificate-notification-purchase')) {
-			//wp_enqueue_script( 'sagepay', 'https://pi-live.sagepay.com/api/v1/js/sagepay.js', array( '' ), $this->version, false );
-			wp_enqueue_script( $this->plugin_name . '-sagepay', 'https://pi-test.sagepay.com/api/v1/js/sagepay.js', array(), '3', false );
+			if(defined('SAGEPAY_TEST_MODE') && SAGEPAY_TEST_MODE == true) {
+				wp_enqueue_script( $this->plugin_name . '-sagepay', 'https://pi-test.sagepay.com/api/v1/js/sagepay.js', array(), '4', false );
+			} else {
+				wp_enqueue_script( $this->plugin_name . '-sagepay', 'https://pi-live.sagepay.com/api/v1/js/sagepay.js', array(), '4', false );
+			}
 		}
 	}
 
@@ -210,7 +213,7 @@ class Hetas_Certificate_Purchasing_Public {
 			'cardDetails' => array(
 				'cardholderName' => $postdata['cardholderName'],
 				'cardNumber' => str_replace(' ', '', $postdata['cardNumber']),
-				'expiryDate' => $postdata['expiryDate'],
+				'expiryDate' => str_replace('/', '', $postdata['expiryDate']),
 				'securityCode' => $postdata['securityCode'],
 			)
 		);
@@ -231,7 +234,7 @@ class Hetas_Certificate_Purchasing_Public {
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_ENCODING => "",
 			CURLOPT_MAXREDIRS => 10,
-			CURLOPT_TIMEOUT => 0,
+			CURLOPT_TIMEOUT => 30,
 			CURLOPT_FOLLOWLOCATION => false,
 			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
 			CURLOPT_CUSTOMREQUEST => "POST",
@@ -248,10 +251,10 @@ class Hetas_Certificate_Purchasing_Public {
 		curl_close($curl);
 
 		if ($err) {
-		  echo "cURL Error #:" . $err;
+		  error_log("COC Log: cURL Error #:" . $err);
 		} else {
 			$response = json_decode($response);
-			error_log(json_encode($response));
+			error_log('COC Log: ' . json_encode($response));
 			wp_mail(array('elliott@squareonemd.co.uk','info@hetas.co.uk'), 'COC Error: generate_ccp_card_identifier', json_encode($response));
 		}
 
@@ -281,7 +284,7 @@ class Hetas_Certificate_Purchasing_Public {
 		$creditunits = $postdata['creditunits'];
 		$spamount = (int)$postdata['spamount'];
 
-		error_log('PayPay Payment: initiated with merchkey ' . $merchkey );
+		error_log('COC Log: PayPay Payment: initiated with merchkey ' . $merchkey );
 
 		$response_data = $this->successful_ccp_payment($postdata, $response);
 
@@ -339,7 +342,7 @@ class Hetas_Certificate_Purchasing_Public {
 				'state' => null
 			),
 			'entryMethod' => 'Ecommerce',
-			'apply3DSecure' => 'Force',
+			'apply3DSecure' => 'Disable',
 			'applyAvsCvcCheck' => 'Force',
 			'description' => 'Copy Business Certificate Via Website',
 			'customerEmail' => $email,
@@ -360,8 +363,17 @@ class Hetas_Certificate_Purchasing_Public {
 
 		if($test) {
 			$sage_transaction_url = 'https://pi-test.sagepay.com/api/v1/transactions/';
+			$sage_httpheader = array(
+				'Content-Type: application/json',
+				'Authorization: Basic eGVpVGpTMWtieWoycnNWTFRDeW9uY3JVNE8yY3prSGttMnpoeTJxeHh6UVJSNjJyOGs6TkF3cWZ2eEc1NzkyM2VoZ0xwdUU2aGk2QVdUWnRtRU1kczBub3RVS2I4U2xiUWZpVnd4b0xqMDRLYUVjNVI0bHg='
+			);
 		} else {
 			$sage_transaction_url = 'https://pi-live.sagepay.com/api/v1/transactions/';
+			$sage_httpheader = array(
+				'Content-Type: application/json',
+				'Authorization: Basic Tk5TMjlXTjFqbUZhM3haZ2dnRGYwZ2JkcGNaeXlsOEhQZTRiSzNIQkVia1ZyYXBQcHM6RXFaNHhpdVRHelMwYXZ3RnpwemgyOVdoMVRUNWJzcEVGRjBuZ016VzZ2MXNtZjhLYmh6RUZKNjFPNHFMd09pMHk=',
+				'Cookie: AWSALB=N3m1zSqCk6KcnhcrhhVFj/tA+7aV+uyntTNP6k83Fg558rIQNBHN+zbZKm3KenKOA4teQXSQLTjhblcGNSqYWAlRM6saJivgybvmf3vDgFHfO8tueajai0renwVF; AWSALBCORS=N3m1zSqCk6KcnhcrhhVFj/tA+7aV+uyntTNP6k83Fg558rIQNBHN+zbZKm3KenKOA4teQXSQLTjhblcGNSqYWAlRM6saJivgybvmf3vDgFHfO8tueajai0renwVF'
+			);
 		}
 
 		$curl = curl_init();
@@ -371,16 +383,12 @@ class Hetas_Certificate_Purchasing_Public {
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_ENCODING => "",
 			CURLOPT_MAXREDIRS => 10,
-			CURLOPT_TIMEOUT => 0,
+			CURLOPT_TIMEOUT => 30,
 			CURLOPT_FOLLOWLOCATION => true,
 			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
 			CURLOPT_CUSTOMREQUEST => "POST",
 			CURLOPT_POSTFIELDS => $postBody,
-			CURLOPT_HTTPHEADER => array(
-				"Content-Type: application/json",
-				"Authorization: Basic eGVpVGpTMWtieWoycnNWTFRDeW9uY3JVNE8yY3prSGttMnpoeTJxeHh6UVJSNjJyOGs6TkF3cWZ2eEc1NzkyM2VoZ0xwdUU2aGk2QVdUWnRtRU1kczBub3RVS2I4U2xiUWZpVnd4b0xqMDRLYUVjNVI0bHg=",
-				"Cookie: AWSALB=YOkigtC+dDselolZRxSYpWn0RPxq4ldibLbroBX0DojW2hgXuukuDT7oLRJV+0WNuO9tcPXINP8MUDIoN+r89wZEFhZ+UcBEIMk8P4U5i0fRK+GOyzFg6/VUhH4h; AWSALBCORS=YOkigtC+dDselolZRxSYpWn0RPxq4ldibLbroBX0DojW2hgXuukuDT7oLRJV+0WNuO9tcPXINP8MUDIoN+r89wZEFhZ+UcBEIMk8P4U5i0fRK+GOyzFg6/VUhH4h"
-			),
+			CURLOPT_HTTPHEADER => $sage_httpheader,
 		));
 		  
 		$response = curl_exec($curl);
@@ -388,7 +396,7 @@ class Hetas_Certificate_Purchasing_Public {
 		curl_close($curl);
 
 		if ($err) {
-		  echo "cURL Error #:" . $err;
+			error_log( "COC Log: cURL Error #:" . $err );
 		} else {
 			$response = json_decode($response);
 		}
@@ -396,7 +404,7 @@ class Hetas_Certificate_Purchasing_Public {
 		if ($response->statusCode == '0000') {
 			$response_data = $this->successful_ccp_payment($postdata, $response);
 		} else {
-			error_log('Saypay Payment: ' . json_encode($response));
+			error_log('SCOC Log: aypay Payment: ' . json_encode($response));
 			wp_mail(array('elliott@squareonemd.co.uk','info@hetas.co.uk'), 'COC Error: process_ccp_sagepay_transaction', json_encode($response));
 		}
 
@@ -404,23 +412,29 @@ class Hetas_Certificate_Purchasing_Public {
 		
 	}
 
+
 	public function successful_ccp_payment($postdata, $response) {
+
 		$emailaddress = $postdata["emailaddress"];
 
 		$call = new Dynamics_crm('crm','1.1.0');
 		$contact = $call->get_contact_by_email($emailaddress);
+		error_log('COC Log: Contact response from $call->get_contact_by_email('.$emailaddress.') ' . json_encode($contact));
 		if($contact->value) { // if contact then update with this data
 			$this->check_update_contact($contact, $postdata);
 		} else { // if contact null then add new contact
 			$contact = $this->create_new_contact($postdata);
+			error_log('COC Log: Contact response from $this->create_new_contact('.json_encode($postdata).') ' . json_encode($contact));
 		}
+		// debug no sagepay invoice 
 		$invoice = $this->create_ccp_invoice($contact, $response, $postdata); // create invoice
-		error_log('Invoice created');
-		error_log('Inv No: ' . $invoice->invoicenumber . ', Name: ' . $invoice->name);
+		error_log('COC Log: Invoice created ' . json_encode($invoice));
+		error_log('COC Log: Inv No: ' . $invoice->invoicenumber . ', Name: ' . $invoice->name);
  		$invoice_items = $this->create_ccp_invoice_items($invoice, $contact, $response, $postdata); // create invoice items
-		error_log('Invoice items binded');
+		error_log('COC Log: Invoice items binded');
+		// debug sagepay
 		$payment = $this->create_ccp_payment($invoice, $contact, $response, $postdata);
-		error_log('Payment created delay started');
+		error_log('COC Log: Payment created delay started');
 		// update notification by id with set van_onlinecoc to 1
 		// & populate van_emailcoc with the email address entered on the web form.
 		// if invoice is paid
@@ -477,7 +491,7 @@ class Hetas_Certificate_Purchasing_Public {
 		curl_close($curl);
 
 		if ($err) {
-			error_log("cURL Error #:" . $err);
+			error_log("COC Log: cURL Error #:" . $err);
 		} else {
 			$response = json_decode($response);
 		}
@@ -498,11 +512,11 @@ class Hetas_Certificate_Purchasing_Public {
 		$invoice = $invoice->value[0];
 
 		if($invoice->invoicenumber == '') {
-			error_log('Error: Tried to check invoice but there was no invoicenumber');
+			error_log('COC Log: Error: Tried to check invoice but there was no invoicenumber');
 			return false;
 		}
 		if($invoice->statecode != 2) {
-			error_log('Error: Invoice is not set to paid');
+			error_log('COC Log: Error: Invoice is not set to paid');
 			return false;
 		}
 		if($invoice->statecode == 2) {
@@ -527,13 +541,15 @@ class Hetas_Certificate_Purchasing_Public {
 			die ( 'Busted!' );
 		}
 		
-		error_log('waiting 60 seconds before ready!');
+		error_log('COC Log: waiting 60 seconds before ready!');
 		sleep(60);
-		if($this->invoice_is_paid($_POST['invoicenumber'])) {
-			error_log('Paid successful, now setting COC checkboxes');
-			$this->update_ccp_notification_with_users_emailaddress($_POST['emailaddress'],$_POST['notificationid']);
-		}
-		error_log('finished');
+		// remove check for invoice status of Paid; instead, always set notification’s
+		// “Online CoC” and “Email CoC” fields (after the 1 minute wait)
+		// if($this->invoice_is_paid($_POST['invoicenumber'])) {
+		error_log('COC Log: Paid successful, now setting COC checkboxes');
+		$this->update_ccp_notification_with_users_emailaddress($_POST['emailaddress'],$_POST['notificationid']);
+		// }
+		error_log('COC Log: finished');
 		// Don't forget to stop execution afterward.
 		wp_die();
 		
@@ -560,7 +576,7 @@ class Hetas_Certificate_Purchasing_Public {
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_ENCODING => "",
 			CURLOPT_MAXREDIRS => 10,
-			CURLOPT_TIMEOUT => 0,
+			CURLOPT_TIMEOUT => 30,
 			CURLOPT_FOLLOWLOCATION => false,
 			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
 			CURLOPT_CUSTOMREQUEST => "GET",
@@ -579,7 +595,7 @@ class Hetas_Certificate_Purchasing_Public {
 		curl_close($curl);
 
 		if ($err) {
-		  	error_log('cURL Error #:' . $err);
+		  	error_log('COC Log: cURL Error #:' . $err);
 		} else {
 			$response = json_decode($response);
 		}
@@ -601,7 +617,7 @@ class Hetas_Certificate_Purchasing_Public {
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_ENCODING => '',
 			CURLOPT_MAXREDIRS => 10,
-			CURLOPT_TIMEOUT => 0,
+			CURLOPT_TIMEOUT => 30,
 			CURLOPT_FOLLOWLOCATION => false,
 			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
 			CURLOPT_CUSTOMREQUEST => 'PATCH',
@@ -623,12 +639,23 @@ class Hetas_Certificate_Purchasing_Public {
 		curl_close($curl);
 
 		if ($err) {
-		  	error_log('cURL Error #:' . $err);
+		  	error_log('COC Log: cURL Error #:' . $err);
 		} else {
-			error_log('Notification updated');
+			error_log('COC Log: Notification updated');
 		}
 
 
+	}
+
+	public function card_payment_mapping() {
+		$array = array(
+			'visa' => '100000004',
+			'mastercard' => '100000004',
+			'visadebit' => '100000005',
+			'debitmastercard' => '100000005',
+			'maestro' => '100000005'
+		);
+		return $array;
 	}
 
 	/**
@@ -638,10 +665,19 @@ class Hetas_Certificate_Purchasing_Public {
 	 * @return void
 	 */
 	public function create_ccp_payment($invoice, $contact, $response, $postdata) {
+		// 
 		if(null == $response) {
 			$van_paymentmethod = '100000007';
 		} else {
-			$van_paymentmethod = '100000004';
+			$card_types = $this->card_payment_mapping();
+			$key = strtolower($response->paymentMethod->card->cardType);
+			if('' != $key) {
+				$van_paymentmethod = $card_types[$key];
+			} else {
+				error_log('COC Log: Error: unknown match in CRM for payment card type ' . $response->paymentMethod->card->cardType . ' - so set the payment method by default to credit card.');
+				$van_paymentmethod = '100000004';
+			}
+			
 		}
 
 		$call = new Dynamics_crm('crm','1.1.0');
@@ -667,7 +703,7 @@ class Hetas_Certificate_Purchasing_Public {
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_ENCODING => "",
 			CURLOPT_MAXREDIRS => 10,
-			CURLOPT_TIMEOUT => 0,
+			CURLOPT_TIMEOUT => 30,
 			CURLOPT_FOLLOWLOCATION => false,
 			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
 			CURLOPT_CUSTOMREQUEST => "POST",
@@ -685,7 +721,7 @@ class Hetas_Certificate_Purchasing_Public {
 		$response = curl_exec($curl);
 
 		curl_close($curl);
-		echo $response;
+		error_log( 'COC Log: Response after creating payment: ' . $response );
 
 	}
 
@@ -710,7 +746,7 @@ class Hetas_Certificate_Purchasing_Public {
 		CURLOPT_RETURNTRANSFER => true,
 		CURLOPT_ENCODING => "",
 		CURLOPT_MAXREDIRS => 10,
-		CURLOPT_TIMEOUT => 0,
+		CURLOPT_TIMEOUT => 30,
 		CURLOPT_FOLLOWLOCATION => false,
 		CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
 		CURLOPT_CUSTOMREQUEST => "POST",
@@ -731,7 +767,7 @@ class Hetas_Certificate_Purchasing_Public {
 		curl_close($curl);
 
 		if ($err) {
-		  	error_log("cURL Error #:" . $err);
+		  	error_log("COC Log: cURL Error #:" . $err);
 		} else {
 			$response = json_decode($response);
 		}
@@ -768,7 +804,7 @@ class Hetas_Certificate_Purchasing_Public {
 		  CURLOPT_RETURNTRANSFER => true,
 		  CURLOPT_ENCODING => "",
 		  CURLOPT_MAXREDIRS => 10,
-		  CURLOPT_TIMEOUT => 0,
+		  CURLOPT_TIMEOUT => 30,
 		  CURLOPT_FOLLOWLOCATION => false,
 		  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
 		  CURLOPT_CUSTOMREQUEST => "POST",
@@ -789,7 +825,7 @@ class Hetas_Certificate_Purchasing_Public {
 		curl_close($curl);
 
 		if ($err) {
-		  echo "cURL Error #:" . $err;
+		  error_log( "COC Log: cURL Error #:" . $err );
 		} else {
 			$response = json_decode($response);
 		}
@@ -845,7 +881,7 @@ class Hetas_Certificate_Purchasing_Public {
 		curl_close($curl);
 
 		if ($err) {
-			error_log("cURL Error #:" . $err);
+			error_log("COC Log: cURL Error #:" . $err);
 		}
 
 	}
@@ -877,7 +913,7 @@ class Hetas_Certificate_Purchasing_Public {
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_ENCODING => "",
 			CURLOPT_MAXREDIRS => 10,
-			CURLOPT_TIMEOUT => 0,
+			CURLOPT_TIMEOUT => 30,
 			CURLOPT_FOLLOWLOCATION => false,
 			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
 			CURLOPT_CUSTOMREQUEST => "POST",
@@ -898,7 +934,7 @@ class Hetas_Certificate_Purchasing_Public {
 		curl_close($curl);
 
 		if ($err) {
-		  echo "cURL Error #:" . $err;
+		  error_log( "COC Log: cURL Error #:" . $err );
 		} else {
 			$contact = json_decode($response);
 		}

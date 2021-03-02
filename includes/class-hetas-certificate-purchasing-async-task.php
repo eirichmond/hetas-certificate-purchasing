@@ -13,9 +13,9 @@ class CCP_Async_Task extends WP_Async_Task {
 	 * @return array
 	 */
 	protected function prepare_data( $data ) {
-        error_log('sleep');
-        error_log('awake');
-        $data = 'foobar';
+        error_log('COC Log: sleep');
+        error_log('COC Log: awake');
+        $data = 'COC Log: foobar';
         error_log($data);
 
         return array( 'data' => $data );
