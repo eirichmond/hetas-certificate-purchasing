@@ -33,12 +33,16 @@ if ( ! defined( 'WPINC' ) ) {
 /**
  * Define PayPal live client id
  */
-define('PAYPAL_CLIENT_ID', 'ASEsoHEDbUhKROVr2HPB-Iz1ABWHuIQW749KWKvrwIIRjEtrl0sfU6nirDk6Yy25Twj4caOC8EcRpPlj');
+if ( ! defined ( 'PAYPAL_CLIENT_ID' )) {
+	define('PAYPAL_CLIENT_ID', 'ASEsoHEDbUhKROVr2HPB-Iz1ABWHuIQW749KWKvrwIIRjEtrl0sfU6nirDk6Yy25Twj4caOC8EcRpPlj');
+}
 
 /**
  * Define Sagepay 
  */
-define('SAGEPAY_TEST_MODE', false);
+if (!defined('SAGEPAY_TEST_MODE')) {
+	define('SAGEPAY_TEST_MODE', false);
+}
 
 /**
  * Currently plugin version.

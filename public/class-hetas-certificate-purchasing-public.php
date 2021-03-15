@@ -255,7 +255,6 @@ class Hetas_Certificate_Purchasing_Public {
 		} else {
 			$response = json_decode($response);
 			error_log('COC Log: ' . json_encode($response));
-			wp_mail(array('elliott@squareonemd.co.uk','info@hetas.co.uk'), 'COC Error: generate_ccp_card_identifier', json_encode($response));
 		}
 
 		return $response;
@@ -686,9 +685,16 @@ class Hetas_Certificate_Purchasing_Public {
 
 		// convert the pence to pounds and pence
 		$price = $postdata['spamount'];
+
+		// fix for new contacts that aren't in an object
+		if(empty($contact->value[0]->contactid) || '' == $contact->value[0]->contactid ) {
+			$contactid = $contact->contactid;
+		} else {
+			$contactid = $contact->value[0]->contactid;
+		}
 		
 		$payment = array(
-			'van_PayerContact@odata.bind' => 'contacts('.$contact->value[0]->contactid.')',
+			'van_PayerContact@odata.bind' => 'contacts('.$contactid.')',
 			'van_invoiceId@odata.bind' => 'invoices('.$invoice->invoiceid.')',
 			'van_paymentcategory' => '100000000',
 			'van_paymentmethod' => $van_paymentmethod,
@@ -781,10 +787,16 @@ class Hetas_Certificate_Purchasing_Public {
 		$call = new Dynamics_crm('crm','1.1.0');
 		$access_token = $call->get_access_token();
 
+		if(empty($contact->value[0]->contactid) || '' == $contact->value[0]->contactid ) {
+			$contactid = $contact->contactid;
+		} else {
+			$contactid = $contact->value[0]->contactid;
+		}
+
 		$object = array(
 			'transactioncurrencyid@odata.bind' => 'transactioncurrencies(12565274-81B2-E811-80D2-00155D050FFD)',
 			'pricelevelid@odata.bind' => 'pricelevels(7C11153C-B03E-E911-80D3-00155D0515B7)',
-			'customerid_contact@odata.bind' => 'contacts('.$contact->value[0]->contactid.')',
+			'customerid_contact@odata.bind' => 'contacts('.$contactid.')',
 			'van_NotificationId@odata.bind' => 'van_notifications('.$postdata['notification_uid'].')',
 			'van_invoicetype' => '100000000',
 			'name' => 'Conf: ' . $postdata['notification_id'],
