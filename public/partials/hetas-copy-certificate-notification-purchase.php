@@ -141,7 +141,7 @@
                 </div>
 
                 <div class="col-sm-3 text-left">
-                    <button type="button" class="btn btn-primary pay-by-credit-card"><span class="glyphicon glyphicon-credit-card" aria-hidden="true"></span> Credit Card</button>
+                    <button type="button" class="btn btn-primary pay-by-credit-card"><span class="glyphicon glyphicon-credit-card" aria-hidden="true"></span> Card Payment</button>
                 </div>
 
             </div>
