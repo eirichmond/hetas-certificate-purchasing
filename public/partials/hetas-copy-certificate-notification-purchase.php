@@ -3,9 +3,9 @@
     $dynamics_crm_class = new Hetas_Dynamics_crm_Public('Hetas Dynamics CRM', '1.0');
     $public_class = new Hetas_Certificate_Purchasing_Public('Hetas Cert Purchasing', '1.0.0');
     $product = $public_class->ccp_get_product_by_id('COPYCOC');
-    $amount = number_format($product[0]->amount);
+    $amount = number_format($product[0]->amount, 2, '.', '');
     $vat_rate = 20;
-    $additionalVat = number_format($product[0]->amount / 100 * $vat_rate);
+    $additionalVat = number_format($product[0]->amount / 100 * $vat_rate, 2, '.', '');
     $total = $product[0]->amount / 100 * $vat_rate + $product[0]->amount;
     $charge = $total * 100;
     $sub_total = $amount * 100;
