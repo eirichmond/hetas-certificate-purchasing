@@ -220,12 +220,11 @@ class Hetas_Certificate_Purchasing_Public {
 
 		$postBody = json_encode($postArray);
 
-		if($test) {
+		if(defined('SAGEPAY_TEST_MODE') && SAGEPAY_TEST_MODE == true) {
 			$sage_card_identifier_url = 'https://pi-test.sagepay.com/api/v1/card-identifiers/';
 		} else {
 			$sage_card_identifier_url = 'https://pi-live.sagepay.com/api/v1/card-identifiers/';
 		}
-
 
 		$curl = curl_init();
 
@@ -280,7 +279,6 @@ class Hetas_Certificate_Purchasing_Public {
 		$email = $postdata['emailaddress'];
 		$mobile = $postdata['mobilephone'];
 		$merchkey = $postdata['merchantsessionkey'];
-		$creditunits = $postdata['creditunits'];
 		$spamount = (int)$postdata['spamount'];
 
 		error_log('COC Log: PayPay Payment: initiated with merchkey ' . $merchkey );
@@ -315,7 +313,6 @@ class Hetas_Certificate_Purchasing_Public {
 		$mobile = $postdata['mobilephone'];
 		$merchkey = $postdata['merchantsessionkey'];
 		$cardid = $card_identifier->cardIdentifier;
-		$creditunits = $postdata['creditunits'];
 		$vendorstxt = uniqid();
 		$spamount = (int)$postdata['spamount'];
 
@@ -360,7 +357,7 @@ class Hetas_Certificate_Purchasing_Public {
 
 		$postBody = json_encode($postArray);
 
-		if($test) {
+		if(defined('SAGEPAY_TEST_MODE') && SAGEPAY_TEST_MODE == true) {
 			$sage_transaction_url = 'https://pi-test.sagepay.com/api/v1/transactions/';
 			$sage_httpheader = array(
 				'Content-Type: application/json',
@@ -403,7 +400,11 @@ class Hetas_Certificate_Purchasing_Public {
 		if ($response->statusCode == '0000') {
 			$response_data = $this->successful_ccp_payment($postdata, $response);
 		} else {
+<<<<<<< HEAD
 			error_log('SCOC Log: aypay Payment: ' . json_encode($response));
+=======
+			error_log('COC Log: aypay Payment: ' . json_encode($response));
+>>>>>>> production
 			wp_mail(array('elliott@squareonemd.co.uk','info@hetas.co.uk'), 'COC Error: process_ccp_sagepay_transaction', json_encode($response));
 		}
 
@@ -793,9 +794,18 @@ class Hetas_Certificate_Purchasing_Public {
 			$contactid = $contact->value[0]->contactid;
 		}
 
+<<<<<<< HEAD
 		$object = array(
 			'transactioncurrencyid@odata.bind' => 'transactioncurrencies(12565274-81B2-E811-80D2-00155D050FFD)',
 			'pricelevelid@odata.bind' => 'pricelevels(7C11153C-B03E-E911-80D3-00155D0515B7)',
+=======
+		$pricelist_options = get_option('price_list_settings');
+		$current_pricelist_setting = $pricelist_options['active_crm_price_list'];
+
+		$object = array(
+			'transactioncurrencyid@odata.bind' => 'transactioncurrencies(12565274-81B2-E811-80D2-00155D050FFD)',
+			'pricelevelid@odata.bind' => 'pricelevels('.$current_pricelist_setting.')',
+>>>>>>> production
 			'customerid_contact@odata.bind' => 'contacts('.$contactid.')',
 			'van_NotificationId@odata.bind' => 'van_notifications('.$postdata['notification_uid'].')',
 			'van_invoicetype' => '100000000',
@@ -861,7 +871,7 @@ class Hetas_Certificate_Purchasing_Public {
 			'address1_postalcode' => $postdata['billingaddresspostcode'],
 			'emailaddress1' => $postdata['emailaddress'],
 			'telephone1' => $postdata['mobilephone'],
-			'donotemail' => $postdata['donotemail'] ? true : false,
+			// 'donotemail' => $postdata['donotemail'] ? true : false,
 			'van_consumer' => true
 		);
 		$object = json_encode($object);
@@ -912,12 +922,12 @@ class Hetas_Certificate_Purchasing_Public {
 			'address1_postalcode' => $postdata['billingaddresspostcode'],
 			'emailaddress1' => $postdata['emailaddress'],
 			'telephone1' => $postdata['mobilephone'],
-			'donotemail' => $postdata['donotemail'] ? true : false,
+			// 'donotemail' => $postdata['donotemail'] ? true : false,
 			'van_consumer' => true
 		);
 
 		$object = json_encode($object);
-		$err = curl_error($curl);
+
 		$curl = curl_init();
 
 		curl_setopt_array($curl, array(
