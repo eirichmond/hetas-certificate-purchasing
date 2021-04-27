@@ -79,6 +79,7 @@ class Hetas_Certificate_Purchasing {
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
 
+
 	}
 
 	/**
@@ -111,6 +112,7 @@ class Hetas_Certificate_Purchasing {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-hetas-certificate-purchasing-i18n.php';
 
+
 		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
@@ -121,6 +123,7 @@ class Hetas_Certificate_Purchasing {
 		 * side of the site.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-hetas-certificate-purchasing-public.php';
+
 
 		$this->loader = new Hetas_Certificate_Purchasing_Loader();
 
@@ -142,6 +145,8 @@ class Hetas_Certificate_Purchasing {
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
 
 	}
+
+
 
 	/**
 	 * Register all of the hooks related to the admin area functionality
@@ -175,8 +180,12 @@ class Hetas_Certificate_Purchasing {
 
 		$this->loader->add_action( 'template_include', $plugin_public, 'hetas_copy_certificate_purchase_templates', 99 );
 
-
+		$this->loader->add_action( 'wp_ajax_nopriv_async_update_ccp_notification_with_users_emailaddress', $plugin_public, 'async_update_ccp_notification_with_users_emailaddress' );
+		$this->loader->add_action( 'wp_ajax_async_update_ccp_notification_with_users_emailaddress', $plugin_public, 'async_update_ccp_notification_with_users_emailaddress' );
+		
 	}
+
+
 
 	/**
 	 * Run the loader to execute all of the hooks with WordPress.

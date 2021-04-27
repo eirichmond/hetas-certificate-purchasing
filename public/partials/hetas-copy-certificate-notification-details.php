@@ -1,6 +1,6 @@
 <?php get_header();
     
-    $public_class = new Hetas_Certificate_Purchasing_Public('HETAS_CERTIFICATE_PURCHASING_VERSION', '1.0.0');
+    $public_class = new Hetas_Certificate_Purchasing_Public('HETAS_CERTIFICATE_PURCHASING_VERSION', '2');
     $results = $public_class->hetas_get_ccp_notification_details($_GET['id']);
 
 ?>
@@ -99,7 +99,7 @@
 
             <h2>Purchase Certificate</h2>
 
-            <a href="/hetas-copy-certificate-notification-purchase/?notification_id=<?php echo esc_html($results['notification']->van_name); ?>" class="btn btn-primary" role="button">Purchase Checkout</a>
+            <a href="/hetas-copy-certificate-notification-purchase/?notification_id=<?php echo esc_html($results['notification']->van_name); ?>&notification_uid=<?php echo esc_html($_GET['id']); ?>" class="btn btn-primary" role="button">Purchase Checkout</a>
 
 
         </div>

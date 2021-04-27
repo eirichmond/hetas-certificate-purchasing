@@ -34,9 +34,11 @@
 		var payByCreditCardPanel = document.getElementById('pay-by-credit-card');
 		var payByCreditCardButton = document.querySelector('.pay-by-credit-card');
 
-		payByCreditCardButton.addEventListener('click', function(){
-			payByCreditCardPanel.style.display = 'block';
-		});
+		if(payByCreditCardButton) {
+			payByCreditCardButton.addEventListener('click', function(){
+				payByCreditCardPanel.style.display = 'block';
+			});
+		}
 
 		$('.coc-req').on('keyup',function () {
 			var cocRequired = document.querySelectorAll('.coc-req');
@@ -52,11 +54,44 @@
 				}
 			});
 		});
+
+
+		var ccpSuccessfulPayment = document.getElementById('ccp-successful-payment');
+		if(ccpSuccessfulPayment) {
+			var invoicenumber = ccpSuccessfulPayment.attributes.data_invoicenumber.nodeValue;
+			var emailaddress = ccpSuccessfulPayment.attributes.data_emailaddress.nodeValue;
+			var notificationid = ccpSuccessfulPayment.attributes.data_notificationid.nodeValue;
+
+			async_update_ccp_notification(invoicenumber, emailaddress, notificationid);
+
+
+		}
 	
 	 });
 
 })( jQuery );
 
+function async_update_ccp_notification(invoicenumber, emailaddress, notificationid) {
+	
+	console.log(invoicenumber, emailaddress, notificationid, async_object);
+
+	jQuery.post(
+		async_object.ajax_url,
+		{
+			// wp ajax action
+			action : 'async_update_ccp_notification_with_users_emailaddress',
+			invoicenumber : invoicenumber,
+			emailaddress : emailaddress,
+			notificationid : notificationid,
+			nextNonce : async_object.nextNonce
+		},
+		
+		function( response ) {
+			console.log( response );
+		}
+	);
+
+}
 
 
 
