@@ -262,16 +262,10 @@
                 formData.append('notification_uid', document.getElementById('notification_uid').value);
                 formData.append('payment_type', 'paypal');
                 formData.append('coc_nonce', document.getElementById('coc_nonce').value);
-<<<<<<< HEAD
-
-                var processing = document.querySelector('.processing');
-                processing.style.display = 'block';
-=======
                 
                 var processing = document.querySelector('.processing');
                 processing.style.display = 'block';
 
->>>>>>> production
                 return fetch(
                     '/hetas-copy-certificate-notification-process-paypal/',
                     {
@@ -298,10 +292,6 @@
                         successContent.innerHTML = '<h2>HETAS Copy Certificate Confirmation Page</h2><div id="ccp-successful-payment" class="bg-success" data_invoicenumber="'+resJson.invoice.invoicenumber+'" data_emailaddress="'+resJson.postdata.emailaddress+'" data_notificationid="'+resJson.postdata.notification_id+'" style="padding:20px;"><h4>Payment Successful</h4> <p>You will receive an email with your certificate attached shortly</p></div>';
                         
                         async_update_ccp_notification(resJson.invoice.invoicenumber, resJson.postdata.emailaddress, resJson.postdata.notification_id);
-<<<<<<< HEAD
-=======
-
->>>>>>> production
 
                     });
 

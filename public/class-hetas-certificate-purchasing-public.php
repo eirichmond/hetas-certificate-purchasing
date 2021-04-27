@@ -400,11 +400,7 @@ class Hetas_Certificate_Purchasing_Public {
 		if ($response->statusCode == '0000') {
 			$response_data = $this->successful_ccp_payment($postdata, $response);
 		} else {
-<<<<<<< HEAD
-			error_log('SCOC Log: aypay Payment: ' . json_encode($response));
-=======
 			error_log('COC Log: aypay Payment: ' . json_encode($response));
->>>>>>> production
 			wp_mail(array('elliott@squareonemd.co.uk','info@hetas.co.uk'), 'COC Error: process_ccp_sagepay_transaction', json_encode($response));
 		}
 
@@ -794,18 +790,12 @@ class Hetas_Certificate_Purchasing_Public {
 			$contactid = $contact->value[0]->contactid;
 		}
 
-<<<<<<< HEAD
-		$object = array(
-			'transactioncurrencyid@odata.bind' => 'transactioncurrencies(12565274-81B2-E811-80D2-00155D050FFD)',
-			'pricelevelid@odata.bind' => 'pricelevels(7C11153C-B03E-E911-80D3-00155D0515B7)',
-=======
 		$pricelist_options = get_option('price_list_settings');
 		$current_pricelist_setting = $pricelist_options['active_crm_price_list'];
 
 		$object = array(
 			'transactioncurrencyid@odata.bind' => 'transactioncurrencies(12565274-81B2-E811-80D2-00155D050FFD)',
 			'pricelevelid@odata.bind' => 'pricelevels('.$current_pricelist_setting.')',
->>>>>>> production
 			'customerid_contact@odata.bind' => 'contacts('.$contactid.')',
 			'van_NotificationId@odata.bind' => 'van_notifications('.$postdata['notification_uid'].')',
 			'van_invoicetype' => '100000000',

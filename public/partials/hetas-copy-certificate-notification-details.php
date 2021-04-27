@@ -116,11 +116,7 @@
         <div class="col-md-6 text-right">
 
 
-<<<<<<< HEAD
-            <a href="/hetas-copy-certificate-notification-purchase/?notification_id=<?php echo esc_html($results['notification']->van_name); ?>&notification_uid=<?php echo esc_html($results['notification']->van_notificationid); ?>" class="btn btn-primary" role="button">Purchase Checkout</a>
-=======
             <a href="/hetas-copy-certificate-notification-purchase/?notification_id=<?php echo esc_html($results['notification']->van_name); ?>&notification_uid=<?php echo esc_html($_GET['id']); ?>" class="btn btn-primary" role="button">Purchase Checkout</a>
->>>>>>> production
 
 
         </div>

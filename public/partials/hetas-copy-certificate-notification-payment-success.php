@@ -5,19 +5,9 @@ if ( ! isset( $_POST['coc_nonce'] )|| ! wp_verify_nonce( $_POST['coc_nonce'], 'c
 
 } else {
 
-<<<<<<< HEAD
-    $public_class = new Hetas_Certificate_Purchasing_Public('HETAS_CERTIFICATE_PURCHASING_VERSION', '1.0.0');
-    if(defined('SAGEPAY_TEST_MODE') && SAGEPAY_TEST_MODE == true) {
-        $test = true;
-    } else {
-        $test = false;
-    }
-    $response = $public_class->process_ccp_sagepay_transaction($_POST, $test);
-=======
     $public_class = new Hetas_Certificate_Purchasing_Public('HETAS_CERTIFICATE_PURCHASING_VERSION', '2');
     $response = $public_class->process_ccp_sagepay_transaction($_POST);
     
->>>>>>> production
 }
 get_header(); ?>
 
