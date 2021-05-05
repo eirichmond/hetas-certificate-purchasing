@@ -732,12 +732,15 @@ class Hetas_Certificate_Purchasing_Public {
 		$call = new Dynamics_crm('crm','1.1.0');
 		$access_token = $call->get_access_token();
 
+		$product = $this->ccp_get_product_by_id('COPYCOC');
+		$amount = $product[0]->amount;
+
 		$object = array(
 			'invoiceid@odata.bind' => 'invoices('.$invoice->invoiceid.')',
-			'productid@odata.bind' => 'products(3d2f255a-abab-e911-80d3-00155d0515b7)',
+			'productid@odata.bind' => 'products('.$product[1]->productid.')',
 			'uomid@odata.bind' => 'uoms(c286415d-9ecd-43b6-88bc-15cd9c04ee50)',
 			'quantity' => 1,
-			'priceperunit' => 15		
+			'priceperunit' => $amount		
 		);
 
 		$object = json_encode($object);
@@ -861,7 +864,7 @@ class Hetas_Certificate_Purchasing_Public {
 			'address1_postalcode' => $postdata['billingaddresspostcode'],
 			'emailaddress1' => $postdata['emailaddress'],
 			'telephone1' => $postdata['mobilephone'],
-			// 'donotemail' => $postdata['donotemail'] ? true : false,
+			'donotemail' => $postdata['donotemail'] ? true : false,
 			'van_consumer' => true
 		);
 		$object = json_encode($object);
@@ -912,7 +915,7 @@ class Hetas_Certificate_Purchasing_Public {
 			'address1_postalcode' => $postdata['billingaddresspostcode'],
 			'emailaddress1' => $postdata['emailaddress'],
 			'telephone1' => $postdata['mobilephone'],
-			// 'donotemail' => $postdata['donotemail'] ? true : false,
+			'donotemail' => $postdata['donotemail'] ? true : false,
 			'van_consumer' => true
 		);
 
