@@ -176,6 +176,25 @@ class Hetas_Certificate_Purchasing_Public {
 	}
 
 	/**
+	 * Add a composite installation address to the response from the data provided.
+	 *
+	 * @param object $response
+	 * @return $response
+	 */
+	public function add_composite_address($response) {
+
+		$composite_address = array(
+			$response->value[0]->van_addressline1,
+			$response->value[0]->van_addressline2,
+			$response->value[0]->van_addressline3
+		);
+		$composite_address = array_filter($composite_address);
+		$composite_address = join(', ',$composite_address);
+		$response->value[0]->composite_address = $composite_address;
+		return $response;
+	}
+
+	/**
 	 * ccp results 
 	 *
 	 * @param string $postcode
@@ -184,6 +203,7 @@ class Hetas_Certificate_Purchasing_Public {
 	public function ccp_get_notification_results($value, $type) {
 		$call = new Dynamics_crm('crm','1.1.0');
 		$response = $call->get_notifications_by_postcode($value, $type);
+		$response = $this->add_composite_address($response);
 		return $response->value;
 	}
 
