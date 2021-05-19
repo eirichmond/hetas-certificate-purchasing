@@ -182,15 +182,17 @@ class Hetas_Certificate_Purchasing_Public {
 	 * @return $response
 	 */
 	public function add_composite_address($response) {
-
-		$composite_address = array(
-			$response->value[0]->van_addressline1,
-			$response->value[0]->van_addressline2,
-			$response->value[0]->van_addressline3
-		);
-		$composite_address = array_filter($composite_address);
-		$composite_address = join(', ',$composite_address);
-		$response->value[0]->composite_address = $composite_address;
+		foreach($response->value as $k => $value) {
+			$composite_address = array(
+				$value->van_addressline1,
+				$value->van_addressline2,
+				$value->van_addressline3
+			);
+			$composite_address = array_filter($composite_address);
+			$composite_address = join(', ',$composite_address);
+			$value->composite_address = $composite_address;
+	
+		}
 		return $response;
 	}
 
