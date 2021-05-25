@@ -82,6 +82,7 @@ $results = $public_class->hetas_ccp_form_process();
 
     </div>
 
+    <small>If the record for your property does not appear, please contact your Installer in the first instance before raising this with HETAS via <a href="<?php echo antispambot( 'support@hetas.co.uk' );?>">Consumer Support</a> or 01684278170</small>
 
     <table class="table table-striped">
         <thead>
