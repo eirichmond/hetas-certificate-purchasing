@@ -183,6 +183,9 @@ class Hetas_Certificate_Purchasing {
 		$this->loader->add_action( 'wp_ajax_nopriv_async_update_ccp_notification_with_users_emailaddress', $plugin_public, 'async_update_ccp_notification_with_users_emailaddress' );
 		$this->loader->add_action( 'wp_ajax_async_update_ccp_notification_with_users_emailaddress', $plugin_public, 'async_update_ccp_notification_with_users_emailaddress' );
 		
+		$this->loader->add_action( 'wp_ajax_nopriv_js_error_logging', $plugin_public, 'js_error_logging' );
+		$this->loader->add_action( 'wp_ajax_js_error_logging', $plugin_public, 'js_error_logging' );
+
 	}
 
 

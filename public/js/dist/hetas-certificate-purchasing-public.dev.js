@@ -77,3 +77,17 @@ function async_update_ccp_notification(invoicenumber, emailaddress, notification
     console.log(response);
   });
 }
+
+function send_js_error_logging(reference, data, actions) {
+  var actions_obj = JSON.stringify(actions);
+  jQuery.post(async_object.ajax_url, {
+    // wp ajax action
+    action: 'js_error_logging',
+    reference: reference,
+    data: data,
+    actions: actions_obj,
+    nextNonce: async_object.nextNonce
+  }, function (response) {
+    console.log(response);
+  });
+}

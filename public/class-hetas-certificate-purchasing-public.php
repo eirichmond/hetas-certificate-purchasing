@@ -575,6 +575,27 @@ class Hetas_Certificate_Purchasing_Public {
 	}
 
 	/**
+	 * an AJAX action for logging
+	 *
+	 * @return void
+	 */
+	public function js_error_logging() {
+
+		$nonce = $_POST['nextNonce'];
+		if ( ! wp_verify_nonce( $nonce, 'async-nonce' ) ) {
+			die ( 'Busted!' );
+		}
+		
+		error_log('COC Log: '. $_POST["reference"]);
+		error_log('COC Log: '. $_POST["data"]["orderID"]);
+		error_log('COC Log: '. $_POST["data"]["payerID"]);
+		wp_die();
+		
+
+	}
+
+
+	/**
 	 * Update the notification record with the purchasers email address
 	 *
 	 * @param string $email

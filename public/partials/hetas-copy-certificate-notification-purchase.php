@@ -216,7 +216,7 @@
 
             fundingSource: paypal.FUNDING.PAYPAL,
             createOrder: function(data, actions) {
-
+                
 
                 // This function sets up the details of the transaction, including the amount and line item details.
                 return actions.order.create({
@@ -239,9 +239,12 @@
                         }
                     }]
                 });
+                
+
 
             },
             onApprove: function(data, actions) {
+                send_js_error_logging('PayPal onApprove', data, actions);
 
                 var processing = document.querySelector('.processing');
 
@@ -278,6 +281,9 @@
 
                     // This function captures the funds from the transaction.
                     return actions.order.capture().then(function(details) {
+
+                        send_js_error_logging('PayPal onApprove', data, actions);
+
                         // This function shows a transaction success message to your buyer.
                         // alert('Transaction completed by ' + details.payer.name.given_name);
                         // window.location.href = '/hetas-copy-certificate-notification-payment-success/';
