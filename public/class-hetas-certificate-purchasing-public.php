@@ -587,8 +587,8 @@ class Hetas_Certificate_Purchasing_Public {
 		}
 		
 		error_log('COC Log: '. $_POST["reference"]);
-		error_log('COC Log: '. $_POST["data"]["orderID"]);
-		error_log('COC Log: '. $_POST["data"]["payerID"]);
+		error_log('COC Log: PayPal orderID: '. $_POST["data"]["orderID"]);
+		error_log('COC Log: PayPal payerID: '. $_POST["data"]["payerID"]);
 		wp_die();
 		
 
