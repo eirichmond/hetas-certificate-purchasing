@@ -20,6 +20,7 @@ get_header(); ?>
     <div id="ccp-successful-payment" data_invoicenumber="<?php echo esc_attr( $response["invoice"]->invoicenumber ); ?>" data_emailaddress="<?php echo esc_attr( $response["postdata"]["emailaddress"] ); ?>" data_notificationid="<?php echo esc_attr( $response["postdata"]["notification_id"] ); ?>" class="bg-success" style="padding:20px;">
         <h4>Payment Successful</h4>
         <p>You will receive an email with your certificate attached shortly.</p>
+        <p>Please allow 30 minutes for your certificate to arrive and don't forget to check your junk mailbox</p>
     </div>
 
     <?php

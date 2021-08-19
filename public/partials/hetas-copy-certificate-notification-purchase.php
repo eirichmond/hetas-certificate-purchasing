@@ -51,6 +51,18 @@
 
         <div class="personal-details form-horizontal">
             <h2>Your Details</h2>
+
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="alert alert-warning" role="alert">
+						<p class="bg-warning">Please input the required fields, when complete choose your payment option, session expires in <span class="label label-success" id="session-expires-in"></span></p>
+
+					</div>
+
+				</div>
+			</div>
+
+
             <small>Required fields marked with <sup class="redastrix">*</sup></small>
 
             <div class="form-group">
@@ -199,9 +211,39 @@
         </div>
     </form>
 
-    <script>
+	<script>
 
+		/**
+		 * setup a session timer as sagepay will expiry in 5 mins on page load
+		 */
+		document.getElementById('session-expires-in').innerHTML = 005 + ":" + 00;
+		startTimer();
 
+		function startTimer() {
+			var presentTime = document.getElementById('session-expires-in').innerHTML;
+			var timeArray = presentTime.split(/[:]+/);
+			var m = timeArray[0];
+			var s = checkSecond((timeArray[1] - 1));
+			if(s==59){m=m-1}
+			//if(m<0){alert('timer completed')}
+
+			document.getElementById('session-expires-in').innerHTML = m + ":" + s;
+			console.log(m + s);
+			if(000 == m + s) {
+				window.location.replace("/hetas-copy-certificate-notification-session-timeout/");
+			}
+			setTimeout(startTimer, 1000);
+		}
+
+		function checkSecond(sec) {
+			if (sec < 10 && sec >= 0) {sec = "0" + sec}; // add zero in front of numbers < 10
+			if (sec < 0) {sec = "59"};
+			return sec;
+		}
+
+		/**
+		 * setup paypal button
+		 */
 
         paypal.Buttons({
             // Set style of buttons
@@ -295,7 +337,7 @@
 
                         var successContent = document.querySelector('.hetas-copy-certificate');
 
-                        successContent.innerHTML = '<h2>HETAS Copy Certificate Confirmation Page</h2><div id="ccp-successful-payment" class="bg-success" data_invoicenumber="'+resJson.invoice.invoicenumber+'" data_emailaddress="'+resJson.postdata.emailaddress+'" data_notificationid="'+resJson.postdata.notification_id+'" style="padding:20px;"><h4>Payment Successful</h4> <p>You will receive an email with your certificate attached shortly</p></div>';
+                        successContent.innerHTML = '<h2>HETAS Copy Certificate Confirmation Page</h2><div id="ccp-successful-payment" class="bg-success" data_invoicenumber="'+resJson.invoice.invoicenumber+'" data_emailaddress="'+resJson.postdata.emailaddress+'" data_notificationid="'+resJson.postdata.notification_id+'" style="padding:20px;"><h4>Payment Successful</h4> <p>You will receive an email with your certificate attached shortly</p><p>Please allow 30 minutes for your certificate to arrive and don\'t forget to check your junk mailbox</p></div>';
                         
                         async_update_ccp_notification(resJson.invoice.invoicenumber, resJson.postdata.emailaddress, resJson.postdata.notification_id);
 

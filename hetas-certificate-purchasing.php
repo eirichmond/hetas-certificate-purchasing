@@ -83,6 +83,10 @@ function ccp_config() {
 			'title' => 'HETAS Copy Certificate Notification Process PayPal',
 			'slug' => 'hetas-copy-certificate-notification-process-paypal'
 		),
+		array(
+			'title' => 'HETAS Copy Certificate Notification Session Timeout',
+			'slug' => 'hetas-copy-certificate-notification-session-timeout'
+		),
 	);
 
 	return $config;

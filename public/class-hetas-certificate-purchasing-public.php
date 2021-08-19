@@ -323,6 +323,11 @@ class Hetas_Certificate_Purchasing_Public {
 	public function process_ccp_sagepay_transaction($postdata, $test = null) {
 
 		$card_identifier = $this->generate_ccp_card_identifier($postdata, $test);
+		if($card_identifier->code == 1002) {
+			error_log('COC Log: Saypay Payment cardIdentifier has expired so Authentication will fail!');
+			wp_mail(array('elliott@squareonemd.co.uk','info@hetas.co.uk'), 'COC Error: generate_ccp_card_identifier', 'Authentication failed due to cardIdentifier expiration session timeout!');
+
+		}
 		
 		$firstname = $postdata['firstname'];
 		$lastname = $postdata['lastname'];
