@@ -168,21 +168,21 @@
                     <div class="form-group">
                         <label for="cardholderName" class="col-sm-3 control-label">Name</label>
                         <div class="col-sm-6">
-                            <input type="text" class="form-control" id="cardholderName" name="cardholderName" placeholder="Cardholder Name" value="">
+                            <input type="text" class="form-control" id="cardholderName" name="cardholderName" placeholder="Cardholder Name" value="" autocomplete="off">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="cardNumber" class="col-sm-3 control-label">Card</label>
                         <div class="col-sm-6">
-                            <input type="text" class="form-control" id="cardNumber" name="cardNumber" placeholder="Card" value="">
+                            <input type="text" class="form-control" id="cardNumber" name="cardNumber" placeholder="Card" value="" autocomplete="off">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="expiryDate" class="col-sm-3 control-label">Expiry</label>
                         <div class="col-sm-6">
-                            <input type="tel" class="form-control" id="expiryDate" name="expiryDate" placeholder="MMYY" value="">
+                            <input type="tel" class="form-control" id="expiryDate" name="expiryDate" placeholder="MMYY" value="" autocomplete="off">
                         </div>
                     </div>
 
