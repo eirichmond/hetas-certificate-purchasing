@@ -99,7 +99,7 @@ class Hetas_Certificate_Purchasing_Public {
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/hetas-certificate-purchasing-public.js', array( 'jquery' ), $this->version, false );
 		wp_localize_script( $this->plugin_name, 'async_object', array( 'ajax_url' => admin_url( 'admin-ajax.php' ), 'nextNonce' => wp_create_nonce( 'async-nonce' ) ) );
 
-		if(is_page('hetas-copy-certificate-notification-purchase')) {
+		if(is_page('hetas-copy-certificate-notification-purchase') || is_page('hetas-copy-certificate-notification-payment-success')) {
 			if(defined('SAGEPAY_TEST_MODE') && SAGEPAY_TEST_MODE == true) {
 				wp_enqueue_script( $this->plugin_name . '-sagepay', 'https://pi-test.sagepay.com/api/v1/js/sagepay.js', array(), '4', false );
 			} else {
@@ -229,13 +229,17 @@ class Hetas_Certificate_Purchasing_Public {
 
 	public function generate_ccp_card_identifier($postdata, $test = null) {
 
+		$crm_dynamics = new Hetas_Dynamics_crm_Public('crm connection', '1.1.0');
+
 		$merchantsessionkey = $postdata['merchantsessionkey'];
+
+		$expiryDate = $crm_dynamics->fix_expiry_date($postdata['expiryDate']);
 
 		$postArray = array(
 			'cardDetails' => array(
 				'cardholderName' => $postdata['cardholderName'],
 				'cardNumber' => str_replace(' ', '', $postdata['cardNumber']),
-				'expiryDate' => str_replace('/', '', $postdata['expiryDate']),
+				'expiryDate' => $expiryDate,
 				'securityCode' => $postdata['securityCode'],
 			)
 		);
@@ -323,11 +327,6 @@ class Hetas_Certificate_Purchasing_Public {
 	public function process_ccp_sagepay_transaction($postdata, $test = null) {
 
 		$card_identifier = $this->generate_ccp_card_identifier($postdata, $test);
-		if($card_identifier->code == 1002) {
-			error_log('COC Log: Saypay Payment cardIdentifier has expired so Authentication will fail!');
-			wp_mail(array('elliott@squareonemd.co.uk','info@hetas.co.uk'), 'COC Error: generate_ccp_card_identifier', 'Authentication failed due to cardIdentifier expiration session timeout!');
-
-		}
 		
 		$firstname = $postdata['firstname'];
 		$lastname = $postdata['lastname'];
@@ -364,9 +363,20 @@ class Hetas_Certificate_Purchasing_Public {
 				'country' => 'GB',
 				'state' => null
 			),
+			'strongCustomerAuthentication' => array(
+				'website' => home_url(),
+				'notificationURL' => home_url().'/3d-secure-challenge/',
+				'browserIP' => $GLOBALS["_SERVER"]["REMOTE_ADDR"],
+				'browserAcceptHeader' => $GLOBALS["_SERVER"]["HTTP_ACCEPT"],
+				'browserJavascriptEnabled' => false,
+				'browserLanguage' => 'en-GB',
+				'browserUserAgent' => $GLOBALS["_SERVER"]["HTTP_USER_AGENT"],
+				'challengeWindowSize' => 'Medium',
+				'transType' => 'GoodsAndServicePurchase',
+			),
 			'entryMethod' => 'Ecommerce',
-			'apply3DSecure' => 'Disable',
-			'applyAvsCvcCheck' => 'Force',
+			'apply3DSecure' => 'UseMSPSetting',
+			'applyAvsCvcCheck' => 'UseMSPSetting',
 			'description' => 'Copy Business Certificate Via Website',
 			'customerEmail' => $email,
 			'customerPhone' => $mobile,
@@ -415,23 +425,21 @@ class Hetas_Certificate_Purchasing_Public {
 		));
 		  
 		$response = curl_exec($curl);
-		$err = curl_error($curl);
+		$response = json_decode($response);
+		error_log('COC Log: Opayo Payment: ' . json_encode($response));
+
 		curl_close($curl);
 
-		if ($err) {
-			error_log( "COC Log: cURL Error #:" . $err );
-		} else {
-			$response = json_decode($response);
-		}
-
 		if ($response->statusCode == '0000') {
-			$response_data = $this->successful_ccp_payment($postdata, $response);
-		} else {
-			error_log('COC Log: aypay Payment: ' . json_encode($response));
-			wp_mail(array('elliott@squareonemd.co.uk','info@hetas.co.uk'), 'COC Error: process_ccp_sagepay_transaction', json_encode($response));
+			$response = $this->successful_ccp_payment($postdata, $response);
+			wp_mail(
+				array("elliott@squareonemd.co.uk", "James.Macaulay@hetas.co.uk"),
+				$response->transactionType. " " .$response->status,
+				$response->statusDetail . " Transaction ID: " . $response->transactionId . " 3D Status: " . $response->{'3DSecure'}->status
+			);
 		}
 
-		return $response_data;
+		return $response;
 		
 	}
 
@@ -462,16 +470,11 @@ class Hetas_Certificate_Purchasing_Public {
 		// & populate van_emailcoc with the email address entered on the web form.
 		// if invoice is paid
 		
+		$response->invoice = $invoice;
+		$response->contact = $contact;
+		$response->postdata = $postdata;
 
-		$successful_data = array();
-		$successful_data['invoice'] = $invoice;
-		$successful_data['contact'] = $contact;
-		$successful_data['response'] = $response;
-		$successful_data['postdata'] = $postdata;
-
-
-		
-		return $successful_data;
+		return $response;
 
 	}
 	
@@ -578,6 +581,32 @@ class Hetas_Certificate_Purchasing_Public {
 		
 
 	}
+
+	/**
+	 * format data for 3D Secure
+	 *
+	 * @param [type] $response
+	 * @param [type] $postdata
+	 * @return void
+	 */
+	public function format_data_for_3DS($response, $postdata) {
+		$data = array(
+			$response->transactionId,
+			$postdata["firstname"],
+			$postdata["lastname"],
+			$postdata["billingaddress1"],
+			$postdata["billingaddresspostcode"],
+			$postdata["emailaddress"],
+			$postdata["notification_id"],
+			$postdata["notification_uid"],
+			$postdata["spamount"],
+		);
+		$data = array_filter($data);
+		$data = json_encode($data);
+		$data = base64_encode($data);
+		return $data;
+	}
+
 
 	/**
 	 * an AJAX action for logging

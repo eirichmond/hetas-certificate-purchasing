@@ -76,16 +76,24 @@ function ccp_config() {
 			'slug' => 'hetas-copy-certificate-notification-payment-sagepay'
 		),
 		array(
+			'title' => 'Opayo 3D Redirect DO NOT REMOVE',
+			'slug' => '3d-redirect'
+		),
+		array(
+			'title' => 'Opayo 3D Secure Challenge DO NOT REMOVE',
+			'slug' => '3d-secure-challenge'
+		),
+		array(
+			'title' => 'Opayo 3D Secure DO NOT REMOVE',
+			'slug' => '3d-secure'
+		),
+		array(
 			'title' => 'HETAS Copy Certificate Notification Payment Success',
 			'slug' => 'hetas-copy-certificate-notification-payment-success'
 		),
 		array(
 			'title' => 'HETAS Copy Certificate Notification Process PayPal',
 			'slug' => 'hetas-copy-certificate-notification-process-paypal'
-		),
-		array(
-			'title' => 'HETAS Copy Certificate Notification Session Timeout',
-			'slug' => 'hetas-copy-certificate-notification-session-timeout'
 		),
 	);
 
