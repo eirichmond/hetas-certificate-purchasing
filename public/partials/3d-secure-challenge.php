@@ -23,6 +23,8 @@
 			'cRes' => $_POST['cres']
 		);
 
+		
+
 		$creq = json_encode($creq);
 
 		$transaction = $new_data[0];
@@ -45,6 +47,7 @@
 
 		$curl = curl_init();
 
+
 		curl_setopt_array($curl, array(
 			CURLOPT_URL => $sage_transaction_url.$transaction.'/3d-secure-challenge',
 			CURLOPT_RETURNTRANSFER => true,
@@ -59,7 +62,11 @@
 		));
 
 		$response = curl_exec($curl);
+
 		$response = json_decode($response);
+
+		error_log('COC Log: '.json_encode( $response ));
+
 		curl_close($curl);
 
 		if($response->statusCode == '0000') {
@@ -73,7 +80,25 @@
 				<p>Please allow 30 minutes for your certificate to arrive and don't forget to check your junk mailbox</p>
 			</div>
 
+		<?php } else { ?>
+
+			<div class="bg-danger" style="padding:20px;">
+					<h4>There was a problem, your payment was unsuccessful!</h4>
+					<p><?php echo esc_html( $response->statusDetail );?></p>
+				</div>
+
+				<?php
+					error_log("COC Log: ".$response->transactionType. " " .$response->status . " " . $response->statusDetail . " Transaction ID: " . $response->transactionId);
+					wp_mail(
+					array("elliott@squareonemd.co.uk", "James.Macaulay@hetas.co.uk"),
+						$response->transactionType. " " .$response->status,
+						$response->statusDetail . " Transaction ID: " . $response->transactionId
+					);
+				?>
+
 		<?php } ?>
+
+
 	
 	</div>
 </div>

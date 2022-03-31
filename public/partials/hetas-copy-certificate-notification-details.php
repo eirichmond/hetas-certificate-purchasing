@@ -35,10 +35,10 @@
                     <td><?php echo esc_html($results['notification']->ak_x002e_van_hetasid); ?></td>
                 </tr>
 
-                <tr>
+                <!-- <tr>
                     <td class="text-right"><strong>Installer Reference:</strong></td>
-                    <td><?php echo esc_html($results['notification']->van_installersuppliedreference); ?></td>
-                </tr>
+                    <td><?php //echo esc_html($results['notification']->van_installersuppliedreference); ?></td>
+                </tr> -->
 
                 <tr>
                     <td class="text-right"><strong>Address Line 1:</strong></td>

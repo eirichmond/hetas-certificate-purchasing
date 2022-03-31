@@ -3,8 +3,6 @@
 
 	<div class="row">
 
-	
-
 		<?php 
 		$new_data = base64_decode($_POST['MD']);
 		$new_data = json_decode($new_data);
@@ -59,8 +57,10 @@
 		));
 
 		$response = curl_exec($curl);
+		error_log('COC Log: ' . $response);
 		$response = json_decode($response);
 		curl_close($curl);
+
 
 		if($response->status == "Authenticated" || $response->status == "Ok Transaction" || $response->status == "AttemptOnly") {
 
@@ -77,8 +77,10 @@
 				CURLOPT_HTTPHEADER => $sage_httpheader,
 			));
 			$response = curl_exec($curl);
+			error_log('COC Log: ' . $response);
 			$response = json_decode($response);
 			curl_close($curl);
+
 
 			if($response->statusCode == '0000') {
 				$public_class = new Hetas_Certificate_Purchasing_Public('Hetas_Certificate_Purchasing_Public', '1.0.1');
@@ -96,7 +98,7 @@
 					wp_mail(
 						array("elliott@squareonemd.co.uk", "James.Macaulay@hetas.co.uk"),
 						$response->transactionType. " " .$response->status,
-						$response->statusDetail . " Transaction ID: " . $response->transactionId
+						$response->statusDetail . " Transaction ID: " . $response->transactionId . " Full Package " . json_encode($response)
 					);
 				;?>
 
@@ -120,6 +122,7 @@
 				));
 				$response = curl_exec($curl);
 				$response = json_decode($response);
+				error_log("COC Log: " . json_encode($response));
 				curl_close($curl);	
 			?>
 
@@ -130,11 +133,11 @@
 
 
 			<?php
-				error_log("COC Log: ".$response->transactionType. " " .$response->status . " " . $response->statusDetail . " Transaction ID: " . $response->transactionId);
+				error_log("COC Log: ".$response->transactionType. " " .$response->status . " " . $response->statusDetail . " Transaction ID: " . $response->transactionId . " Full Package " . json_encode($response));
 				wp_mail(
 					array("elliott@squareonemd.co.uk", "James.Macaulay@hetas.co.uk"),
 					$response->transactionType. " " .$response->status,
-					$response->statusDetail . " Transaction ID: " . $response->transactionId
+					$response->statusDetail . " Transaction ID: " . $response->transactionId . " Full Package " . json_encode($response)
 				);
 			;?>
 

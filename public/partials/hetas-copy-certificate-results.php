@@ -89,7 +89,7 @@ $results = $public_class->hetas_ccp_form_process();
             <tr>
                 <th>#</th>
                 <th>Installing Company</th>
-                <th>Installing Reference</th>
+                <!-- <th>Installing Reference</th> -->
                 <th>Installation Date</th>
                 <th>Address</th>
                 <th>Postcode</th>
@@ -100,7 +100,7 @@ $results = $public_class->hetas_ccp_form_process();
             <tr>
                 <td><a href="/hetas-copy-certificate-notification-details/?id=<?php echo esc_html($result->van_notificationid); ?>"><?php echo esc_html($result->van_name); ?></a></td>
                 <td><?php echo esc_html($result->ak_x002e_name); ?></td>
-                <td><?php echo esc_html($result->van_installersuppliedreference); ?></td>
+                <!-- <td><?php //echo esc_html($result->van_installersuppliedreference); ?></td> -->
                 <td><?php echo esc_html(date('d-m-Y', strtotime($result->van_workcompletiondate))); ?></td>
                 <td><?php echo esc_html($result->composite_address); ?></td>
                 <td><?php echo esc_html($result->van_postcode); ?></td>

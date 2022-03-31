@@ -1,4 +1,5 @@
 <?php
+
 if ( ! isset( $_POST['coc_nonce'] )|| ! wp_verify_nonce( $_POST['coc_nonce'], 'coc_action' )) {
 
     wp_die('Sorry, something was insecure while processing your post, please go back and try again.');
@@ -51,7 +52,7 @@ get_header(); ?>
 
 <?php } ?>
 
-<?php if($response->statusCode == '2001') { ?>
+<?php if($response->statusCode == '2001' || $response->statusCode == '4021' || $response->statusCode == '2000' || $response->statusCode == '5017' ) { ?>
 
     <div class="bg-danger" style="padding:20px;">
         <h4>There was a problem, your payment was unsuccessful!</h4>

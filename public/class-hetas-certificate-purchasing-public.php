@@ -326,6 +326,8 @@ class Hetas_Certificate_Purchasing_Public {
 	 */
 	public function process_ccp_sagepay_transaction($postdata, $test = null) {
 
+		error_log('COC Log: post fields '.json_encode($postdata));
+
 		$card_identifier = $this->generate_ccp_card_identifier($postdata, $test);
 		
 		$firstname = $postdata['firstname'];
