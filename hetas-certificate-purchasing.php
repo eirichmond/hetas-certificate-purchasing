@@ -9,14 +9,14 @@
  * that starts the plugin.
  *
  * @link              https://squareone.software
- * @since             1.0.0
+ * @since             1.1.0
  * @package           Hetas_Certificate_Purchasing
  *
  * @wordpress-plugin
  * Plugin Name:       HETAS Certificate Purchasing
  * Plugin URI:        https://hetas.co.uk
  * Description:       Takes care of all certificate purchasing.
- * Version:           1.0.0
+ * Version:           1.1.0
  * Author:            Elliott Richmond
  * Author URI:        https://squareone.software
  * License:           GPL-2.0+
@@ -46,10 +46,10 @@ if (!defined('SAGEPAY_TEST_MODE')) {
 
 /**
  * Currently plugin version.
- * Start at version 1.0.0 and use SemVer - https://semver.org
+ * Start at version 1.1.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'HETAS_CERTIFICATE_PURCHASING_VERSION', '1.0.0' );
+define( 'HETAS_CERTIFICATE_PURCHASING_VERSION', '1.1.0' );
 
 function ccp_config() {
 
@@ -135,7 +135,7 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-hetas-certificate-purchasi
  * then kicking off the plugin from this point in the file does
  * not affect the page life cycle.
  *
- * @since    1.0.0
+ * @since    1.1.0
  */
 function run_hetas_certificate_purchasing() {
 

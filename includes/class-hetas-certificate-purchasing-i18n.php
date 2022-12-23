@@ -7,7 +7,7 @@
  * so that it is ready for translation.
  *
  * @link       https://squareone.software
- * @since      1.0.0
+ * @since      1.1.0
  *
  * @package    Hetas_Certificate_Purchasing
  * @subpackage Hetas_Certificate_Purchasing/includes
@@ -19,7 +19,7 @@
  * Loads and defines the internationalization files for this plugin
  * so that it is ready for translation.
  *
- * @since      1.0.0
+ * @since      1.1.0
  * @package    Hetas_Certificate_Purchasing
  * @subpackage Hetas_Certificate_Purchasing/includes
  * @author     Elliott Richmond <elliott@squareonemd.co.uk>
@@ -30,7 +30,7 @@ class Hetas_Certificate_Purchasing_i18n {
 	/**
 	 * Load the plugin text domain for translation.
 	 *
-	 * @since    1.0.0
+	 * @since    1.1.0
 	 */
 	public function load_plugin_textdomain() {
 

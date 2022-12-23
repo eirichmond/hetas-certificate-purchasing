@@ -1,6 +1,6 @@
 <?php get_header();
 
-$public_class = new Hetas_Certificate_Purchasing_Public('HETAS_CERTIFICATE_PURCHASING_VERSION', '1.0.0');
+$public_class = new Hetas_Certificate_Purchasing_Public('HETAS_CERTIFICATE_PURCHASING_VERSION', '1.1.0');
 $results = $public_class->hetas_ccp_form_process();
 
 ?>

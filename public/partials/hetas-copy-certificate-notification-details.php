@@ -26,12 +26,17 @@
                 </tr>
 
                 <tr>
-                    <td class="text-right"><strong>Installing Company:</strong></td>
+                    <td class="text-right"><strong>Scheme Type:</strong></td>
+                    <td><?php echo esc_html($results['scheme_type']); ?></td>
+                </tr>
+
+                <tr>
+                    <td class="text-right"><strong><?php echo esc_html( $results['scheme_type_index'] == 0 ? 'Installing' : 'Maintenance'); ?> Company:</strong></td>
                     <td><?php echo esc_html($results['notification']->ak_x002e_name); ?></td>
                 </tr>
 
                 <tr>
-                    <td class="text-right"><strong>Installer ID:</strong></td>
+                    <td class="text-right"><strong><?php echo esc_html( $results['scheme_type_index'] == 0 ? 'Installer' : 'Operative'); ?> ID:</strong></td>
                     <td><?php echo esc_html($results['notification']->ak_x002e_van_hetasid); ?></td>
                 </tr>
 
@@ -40,25 +45,25 @@
                     <td><?php //echo esc_html($results['notification']->van_installersuppliedreference); ?></td>
                 </tr> -->
 
-                <tr>
+                <!-- <tr>
                     <td class="text-right"><strong>Address Line 1:</strong></td>
-                    <td><?php echo esc_html($results['notification']->van_addressline1); ?></td>
+                    <td><?php // echo esc_html($results['notification']->van_addressline1); ?></td>
                 </tr>
 
                 <tr>
                     <td class="text-right"><strong>Address Line 2:</strong></td>
-                    <td><?php echo esc_html($results['notification']->van_addressline2); ?></td>
+                    <td><?php // echo esc_html($results['notification']->van_addressline2); ?></td>
                 </tr>
 
                 <tr>
                     <td class="text-right"><strong>Address Line 3:</strong></td>
-                    <td><?php echo esc_html($results['notification']->van_addressline3); ?></td>
+                    <td><?php // echo esc_html($results['notification']->van_addressline3); ?></td>
                 </tr>
 
                 <tr>
                     <td class="text-right"><strong>Town / City:</strong></td>
-                    <td><?php echo esc_html($results['notification']->van_towncity); ?></td>
-                </tr>
+                    <td><?php // echo esc_html($results['notification']->van_towncity); ?></td>
+                </tr> -->
 
                 <tr>
                     <td class="text-right"><strong>Postcode:</strong></td>
@@ -66,7 +71,7 @@
                 </tr>
 
                 <tr>
-                    <td class="text-right"><strong>Installation Date:</strong></td>
+                    <td class="text-right"><strong><?php echo esc_html( $results['scheme_type_index'] == 0 ? 'Installation' : 'Maintenance'); ?> Date:</strong></td>
                     <td><?php echo esc_html(date('d-m-Y', strtotime($results['notification']->van_workcompletiondate))); ?></td>
                 </tr>
 

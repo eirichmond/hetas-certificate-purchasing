@@ -4,7 +4,7 @@
  * The public-facing functionality of the plugin.
  *
  * @link       https://squareone.software
- * @since      1.0.0
+ * @since      1.1.0
  *
  * @package    Hetas_Certificate_Purchasing
  * @subpackage Hetas_Certificate_Purchasing/public
@@ -25,7 +25,7 @@ class Hetas_Certificate_Purchasing_Public {
 	/**
 	 * The ID of this plugin.
 	 *
-	 * @since    1.0.0
+	 * @since    1.1.0
 	 * @access   private
 	 * @var      string    $plugin_name    The ID of this plugin.
 	 */
@@ -34,7 +34,7 @@ class Hetas_Certificate_Purchasing_Public {
 	/**
 	 * The version of this plugin.
 	 *
-	 * @since    1.0.0
+	 * @since    1.1.0
 	 * @access   private
 	 * @var      string    $version    The current version of this plugin.
 	 */
@@ -43,7 +43,7 @@ class Hetas_Certificate_Purchasing_Public {
 	/**
 	 * Initialize the class and set its properties.
 	 *
-	 * @since    1.0.0
+	 * @since    1.1.0
 	 * @param      string    $plugin_name       The name of the plugin.
 	 * @param      string    $version    The version of this plugin.
 	 */
@@ -57,7 +57,7 @@ class Hetas_Certificate_Purchasing_Public {
 	/**
 	 * Register the stylesheets for the public-facing side of the site.
 	 *
-	 * @since    1.0.0
+	 * @since    1.1.0
 	 */
 	public function enqueue_styles() {
 
@@ -80,7 +80,7 @@ class Hetas_Certificate_Purchasing_Public {
 	/**
 	 * Register the JavaScript for the public-facing side of the site.
 	 *
-	 * @since    1.0.0
+	 * @since    1.1.0
 	 */
 	public function enqueue_scripts() {
 
@@ -211,11 +211,16 @@ class Hetas_Certificate_Purchasing_Public {
 
 	public function hetas_get_ccp_notification_details($notification_id) {
 		$call = new Dynamics_crm('crm','1.1.0');
+		$public_class = new Hetas_Dynamics_crm_Public('crm','1.1.0');
 		$notification = $call->get_notification_by_van_notification_id_for_ccp($notification_id);
+		$scheme = $call->get_scheme_by_id($notification->value[0]->_van_schemeid_value);
+		$scheme_type = $public_class->scheme_type_mapping($scheme->value[0]->van_schemetype);
 		$notification_items = $call->get_notification_items_by_van_notification_id_for_ccp($notification_id);
 		$array = array();
 		$array['notification'] = $notification->value[0]; 
 		$array['notification_items'] = $notification_items->value; 
+		$array['scheme_type'] = $scheme_type; 
+		$array['scheme_type_index'] = $scheme->value[0]->van_schemetype; 
 		return $array;
 	}
 
@@ -760,7 +765,7 @@ class Hetas_Certificate_Purchasing_Public {
 		$access_token = $call->get_access_token();
 
 		// convert the pence to pounds and pence
-		$price = $postdata['spamount'];
+		$price = floatval($postdata['spamount']/100);
 
 		// fix for new contacts that aren't in an object
 		if(empty($contact->value[0]->contactid) || '' == $contact->value[0]->contactid ) {
@@ -775,7 +780,7 @@ class Hetas_Certificate_Purchasing_Public {
 			'van_paymentcategory' => '100000000',
 			'van_paymentmethod' => $van_paymentmethod,
 			'van_paidon' => $invoice->createdon,
-			'van_amount' => (int) number_format($price/100, 2)
+			'van_amount' => $price
 		);
 
 		$curl = curl_init();
@@ -803,7 +808,7 @@ class Hetas_Certificate_Purchasing_Public {
 		$response = curl_exec($curl);
 
 		curl_close($curl);
-		error_log( 'COC Log: Response after creating payment: ' . $response );
+		error_log( 'COC Log: Response after creating payment: ' . json_encode($response) );
 
 	}
 

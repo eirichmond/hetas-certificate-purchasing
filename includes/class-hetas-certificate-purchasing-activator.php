@@ -4,7 +4,7 @@
  * Fired during plugin activation
  *
  * @link       https://squareone.software
- * @since      1.0.0
+ * @since      1.1.0
  *
  * @package    Hetas_Certificate_Purchasing
  * @subpackage Hetas_Certificate_Purchasing/includes
@@ -15,7 +15,7 @@
  *
  * This class defines all code necessary to run during the plugin's activation.
  *
- * @since      1.0.0
+ * @since      1.1.0
  * @package    Hetas_Certificate_Purchasing
  * @subpackage Hetas_Certificate_Purchasing/includes
  * @author     Elliott Richmond <elliott@squareonemd.co.uk>
@@ -27,7 +27,7 @@ class Hetas_Certificate_Purchasing_Activator {
 	 *
 	 * Long Description.
 	 *
-	 * @since    1.0.0
+	 * @since    1.1.0
 	 */
 	public static function activate($config) {
 
